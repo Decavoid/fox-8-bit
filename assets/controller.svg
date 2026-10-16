@@ -16,8 +16,8 @@
     <rect x="91" y="112" width="434" height="184" rx="8" fill="url(#face)" stroke="#616a5f" stroke-width="2"/>
     <path d="M232 113h118v25H232zm0 34h118v25H232zm0 34h118v25H232zm0 73h118v41H232z" fill="#788273" opacity=".56"/>
     <rect x="232" y="216" width="118" height="30" rx="7" fill="#b4b9a8"/>
-    <rect x="245" y="226" width="35" height="11" rx="5.5" fill="#151d17" transform="rotate(-6 245 226)"/>
-    <rect x="301" y="226" width="35" height="11" rx="5.5" fill="#151d17" transform="rotate(-6 301 226)"/>
+    <rect x="246" y="225.5" width="35" height="11" rx="5.5" fill="#151d17"/>
+    <rect x="301" y="225.5" width="35" height="11" rx="5.5" fill="#151d17"/>
     <text x="244" y="203" font-family="monospace" font-weight="bold" font-size="10" letter-spacing="1" fill="#cfedb2">SELECT</text>
     <text x="302" y="203" font-family="monospace" font-weight="bold" font-size="10" letter-spacing="1" fill="#cfedb2">START</text>
     <path d="M145 161h33v34h34v33h-34v34h-33v-34h-34v-33h34Z" fill="#b8c0ad" stroke="#d9ddca" stroke-width="3"/>
