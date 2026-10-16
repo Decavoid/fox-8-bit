@@ -2,7 +2,7 @@
 @font-face{font-family:Golos;src:url('fonts/golos-semibold.ttf') format('truetype');font-weight:500 700;font-display:swap}
 @font-face{font-family:Golos;src:url('fonts/golos-extrabold.ttf') format('truetype');font-weight:800 900;font-display:swap}
 @font-face{font-family:Russo;src:url('fonts/russo-one.ttf') format('truetype');font-weight:400;font-display:swap}
-@font-face{font-family:'Pixelify Sans';src:url('https://raw.githubusercontent.com/google/fonts/main/ofl/pixelifysans/PixelifySans%5Bwght%5D.ttf') format('truetype');font-weight:400 700;font-display:swap}
+@font-face{font-family:'Nihonium 113';src:url('fonts/nihonium113.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 
 :root{color-scheme:dark;--bg:#101211;--panel:#191c19;--panel-light:#20241f;--line:#30362d;--ink:#f2f3e9;--muted:#9ca395;--green:#c0fa79;--green-dim:#202d19;--orange:#f6ac73;--font:Golos,Arial,sans-serif;--display:Russo,'Arial Black',sans-serif;--mono:'Cascadia Code','SFMono-Regular',Consolas,monospace}
 *{box-sizing:border-box}
@@ -49,7 +49,7 @@ h2{font-size:clamp(27px,3vw,38px);line-height:1.2;font-weight:800;letter-spacing
 .eyebrow{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;letter-spacing:1.05px;color:#c1c9b9;white-space:nowrap}
 .tiny-cross{color:var(--green);font-size:16px;line-height:1}
 .eyebrow-divider{height:11px;width:1px;background:#56604d;margin-inline:3px}
-h1{grid-area:title;font-family:'Pixelify Sans',var(--display);font-size:clamp(58px,6.9vw,94px);line-height:1.06;letter-spacing:-2px;font-weight:700;white-space:nowrap}
+h1{grid-area:title;font-family:'Nihonium 113',var(--display);font-size:clamp(58px,6.9vw,94px);line-height:1.06;letter-spacing:-2px;font-weight:400;white-space:nowrap}
 h1>span{color:var(--hero-accent)}
 .hero-actions{grid-area:actions;display:flex;gap:12px;align-items:center;justify-self:end}
 .hero-actions .button{white-space:nowrap}
@@ -65,7 +65,7 @@ h1>span{color:var(--hero-accent)}
 .button-outline{border-color:#4e5846;background:#1c2218}
 .button-outline:hover{border-color:var(--green)}
 .hero-date{grid-area:date;justify-self:start;max-width:100%}
-.hero-date strong{display:block;font-size:clamp(40px,6vw,80px);font-weight:600;line-height:1.1;letter-spacing:-2px;text-transform:capitalize}
+.hero-date strong{display:block;font-family:'Nihonium 113',var(--display);font-size:clamp(40px,6vw,80px);font-weight:400;line-height:1.1;letter-spacing:-2px;text-transform:capitalize}
 
 .event-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#191d1770}
 .event-stats{display:grid;grid-template-columns:1fr 1fr 1fr;padding-block:26px}
