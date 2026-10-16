@@ -15,7 +15,7 @@ function statusLabel(status) {
 function singleCard(match) {
   const result = matchState(match);
   return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
-    <div class="match-card-top"><span>МАТЧ ${pad(match.number)}</span>${result.status === 'completed' ? '' : `<span class="match-status ${result.status}">${statusLabel(result.status)}</span>`}</div>
+    ${result.status === 'completed' ? '' : `<div class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>`}
     ${match.players.map((player, index) => `<div class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
       <span class="contestant-name">${esc(player)}</span>
       ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
@@ -27,7 +27,6 @@ function singleCard(match) {
 function groupCard(block) {
   const standings = groupStandings(block.matches);
   return `<article class="match-card group-card" aria-label="Группа из трёх игроков: ${esc(standings.standings.map(player => player.name).join(', '))}">
-    <div class="match-card-top"><span>МАТЧИ ${pad(block.matches[0].number)}–${pad(block.matches.at(-1).number)}</span></div>
     <div class="group-games">
       ${block.matches.map(match => {
         const result = matchState(match);
