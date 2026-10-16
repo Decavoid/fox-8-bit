@@ -15,8 +15,8 @@ function statusLabel(status) {
 function singleCard(match) {
   const result = matchState(match);
   return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
-    <div class="match-card-top"><span>МАТЧ ${pad(match.number)}</span><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>
-    ${match.players.map((player, index) => `<div class="contestant${result.winner === index ? ' winner' : ''}">
+    <div class="match-card-top"><span>МАТЧ ${pad(match.number)}</span>${result.status === 'completed' ? '' : `<span class="match-status ${result.status}">${statusLabel(result.status)}</span>`}</div>
+    ${match.players.map((player, index) => `<div class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
       <span class="contestant-name">${esc(player)}</span>
       ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
       <span class="score${match.scores[index] === null ? ' pending-score' : ''}" aria-label="${match.scores[index] === null ? 'Счёт пока не указан' : `Очки: ${match.scores[index]}`}">${match.scores[index] ?? '—'}</span>
@@ -32,9 +32,9 @@ function groupCard(block) {
       ${block.matches.map(match => {
         const result = matchState(match);
         return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
-          <span class="group-player${result.winner === 0 ? ' winner' : ''}">${esc(match.players[0])}</span>
+          <span class="group-player${result.winner === null ? '' : result.winner === 0 ? ' winner' : ' loser'}">${esc(match.players[0])}</span>
           <span class="score group-score" aria-hidden="true"><span>${match.scores[0] ?? '—'}</span><span class="score-separator">:</span><span>${match.scores[1] ?? '—'}</span></span>
-          <span class="group-player${result.winner === 1 ? ' winner' : ''}">${esc(match.players[1])}</span>
+          <span class="group-player${result.winner === null ? '' : result.winner === 1 ? ' winner' : ' loser'}">${esc(match.players[1])}</span>
         </div>`;
       }).join('')}
     </div>
