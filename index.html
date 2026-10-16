@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#14120f">
-    <meta name="description" content="ВосьмиБитва — турнир по играм NES и Famicom от FoxyShadow. Участники, результаты матчей, правила и трансляции.">
+    <meta name="description" content="ВосьмиБитва — турнир по играм NES и Famicom от FoxyShadow. Список игр, участники, результаты матчей, правила и трансляции.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ru_RU">
     <meta property="og:title" content="ВосьмиБитва — турнир NES / Famicom">
-    <meta property="og:description" content="Старые игры. Новое соперничество. Все матчи, участники и правила турнира FoxyShadow.">
+    <meta property="og:description" content="Старые игры. Новое соперничество. Все игры, матчи, участники и правила турнира FoxyShadow.">
     <title>ВосьмиБитва — турнир NES / Famicom</title>
     <link rel="icon" href="assets/favicon.png" type="image/png">
     <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
@@ -37,6 +37,7 @@
         <nav class="main-nav" aria-label="Основная навигация">
           <a href="#matches">Матчи</a>
           <a href="#players">Участники</a>
+          <a href="#games">Игры</a>
           <a href="#rules">Правила</a>
         </nav>
         <a class="header-stream" href="#broadcast"><span class="status-dot"></span> Трансляция <svg class="icon"><use href="#icon-external"/></svg></a>
@@ -92,9 +93,20 @@
         <div class="players-grid" id="players-list" aria-busy="true"><p class="loading-message">Загружаем участников…</p></div>
       </section>
 
+      <section class="section container games-section" id="games" aria-labelledby="games-title">
+        <div class="section-heading"><div><p class="section-kicker">03 <span></span> КЛАССИКА НА СТАРТЕ</p><h2 id="games-title">Игры NES / Famicom <span id="games-total" class="count-badge">—</span></h2></div><p class="section-description">Знакомые миры. Новые вызовы.<br>Список игр для турнирной рулетки.</p></div>
+        <div class="games-toolbar">
+          <label class="search-field"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg><input id="game-search" type="search" placeholder="Найти игру" aria-label="Найти игру по названию" aria-controls="games-list" autocomplete="off"></label>
+          <p id="games-result" class="games-result" role="status">Загружаем список…</p>
+          <a class="text-link" href="data/games.txt" target="_blank" rel="noopener noreferrer">Список текстом <svg class="icon" aria-hidden="true"><use href="#icon-external"/></svg></a>
+        </div>
+        <div id="games-notice" class="data-notice" role="status" hidden></div>
+        <div id="games-list" aria-busy="true"><p class="loading-message">Загружаем игры…</p></div>
+      </section>
+
       <section class="rules-section" id="rules" aria-labelledby="rules-title">
         <div class="container rules-layout">
-          <div class="rules-intro"><p class="section-kicker">03 <span></span> ПРАВИЛА ИГРЫ</p><h2 id="rules-title">Честный бой.<br><span class="muted">Всё по правилам.</span></h2><p>Рулетка выбирает игру.<br>Мастерство определяет победителя.</p><a class="text-link" href="data/rules.md" target="_blank" rel="noopener noreferrer">Полный текст правил <svg class="icon"><use href="#icon-external"/></svg></a><div class="rules-decoration" aria-hidden="true"><span>+</span><span>○</span><span>×</span></div></div>
+          <div class="rules-intro"><p class="section-kicker">04 <span></span> ПРАВИЛА ИГРЫ</p><h2 id="rules-title">Честный бой.<br><span class="muted">Всё по правилам.</span></h2><p>Рулетка выбирает игру.<br>Мастерство определяет победителя.</p><a class="text-link" href="data/rules.md" target="_blank" rel="noopener noreferrer">Полный текст правил <svg class="icon"><use href="#icon-external"/></svg></a><div class="rules-decoration" aria-hidden="true"><span>+</span><span>○</span><span>×</span></div></div>
           <div class="rules-content" id="rules-content" aria-busy="true"><p class="loading-message">Загружаем правила…</p></div>
         </div>
       </section>
@@ -108,6 +120,6 @@
     </main>
 
     <footer class="site-footer container"><a class="brand footer-brand" href="#"><img src="assets/favicon.svg" width="28" height="28" alt=""><span>Восьми<span class="accent">Битва</span></span></a><p>Турнир от <a href="https://www.twitch.tv/foxyshadow" target="_blank" rel="noopener noreferrer">FoxyShadow</a>. Сделано с любовью к 8 битам.</p><a href="#" class="back-top">Наверх ↑</a></footer>
-    <noscript><div class="noscript-notice">Для интерактивной сетки нужен JavaScript. Все данные доступны напрямую: <a href="data/scores.txt">результаты</a>, <a href="data/players.txt">участники</a>, <a href="data/rules.md">правила</a>.</div></noscript>
+    <noscript><div class="noscript-notice">Для интерактивной сетки нужен JavaScript. Все данные доступны напрямую: <a href="data/scores.txt">результаты</a>, <a href="data/players.txt">участники</a>, <a href="data/games.txt">игры</a>, <a href="data/rules.md">правила</a>.</div></noscript>
   </body>
 </html>

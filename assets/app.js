@@ -1,7 +1,7 @@
-import { escapeHtml as esc, plural, parsePlayers, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
+import { escapeHtml as esc, plural, parsePlayers, parseGames, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
 
 const $ = selector => document.querySelector(selector);
-const state = { scores: null, players: null, rules: null, stage: 'all', search: '', status: 'all', loading: false };
+const state = { scores: null, players: null, games: null, rules: null, stage: 'all', search: '', gameSearch: '', status: 'all', loading: false };
 const previous = new Map();
 const failures = new Set();
 const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
@@ -96,6 +96,23 @@ function renderPlayers() {
   $('#players-list').setAttribute('aria-busy', 'false');
 }
 
+function renderGamesNotice() {
+  const notice = $('#games-notice');
+  notice.hidden = !failures.has('games') || !state.games;
+  if (!notice.hidden) notice.innerHTML = 'Не удалось обновить список игр. Показаны последние загруженные данные. <button type="button" class="retry-button" data-retry>Повторить загрузку</button>';
+}
+
+function renderGames() {
+  if (!state.games) return;
+  const query = state.gameSearch.trim().toLocaleLowerCase('ru-RU');
+  const games = state.games.map((name, index) => ({ name, number: index + 1 })).filter(game => game.name.toLocaleLowerCase('ru-RU').includes(query));
+  $('#games-total').textContent = state.games.length;
+  $('#games-result').textContent = query ? `Найдено: ${games.length} из ${state.games.length}` : `${state.games.length} ${plural(state.games.length, ['игра', 'игры', 'игр'])} в списке`;
+  $('#games-list').innerHTML = games.length ? `<ol class="games-grid" aria-label="Игры NES / Famicom">${games.map(game => `<li class="game-item" value="${game.number}"><span class="game-number" aria-hidden="true">${pad(game.number)}</span><span class="game-name">${esc(game.name)}</span></li>`).join('')}</ol>` : state.games.length ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое название или сбрось поиск.</p><button type="button" class="reset-button" data-reset-games>Сбросить поиск</button></div>' : '<p class="loading-message">Список игр скоро появится.</p>';
+  $('#games-list').setAttribute('aria-busy', 'false');
+  renderGamesNotice();
+}
+
 function renderPodium() {
   if (!state.scores) return;
   $('#podium').innerHTML = [1, 2, 3].map(place => {
@@ -123,6 +140,7 @@ function renderRules() {
 const loaders = {
   scores: { path: 'data/scores.txt', parse: parseScores, render: () => { renderStageFilters(); renderMatches(); renderPodium(); }, target: '#match-board', label: 'матчи' },
   players: { path: 'data/players.txt', parse: parsePlayers, render: renderPlayers, target: '#players-list', label: 'участников' },
+  games: { path: 'data/games.txt', parse: parseGames, render: renderGames, target: '#games-list', label: 'список игр' },
   rules: { path: 'data/rules.md', parse: parseRules, render: () => { renderRules(); renderPodium(); }, target: '#rules-content', label: 'правила' },
 };
 
@@ -156,8 +174,10 @@ async function loadData() {
             $('#match-progress').textContent = 'Результаты временно недоступны';
             $('#podium').innerHTML = '<p class="loading-message">Итоги появятся после загрузки результатов.</p>';
           }
+          if (key === 'games') $('#games-result').textContent = 'Список временно недоступен';
         }
         if (key === 'scores') renderScoresNotice();
+        if (key === 'games') renderGamesNotice();
       } finally { clearTimeout(timeout); }
     }));
     const now = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date());
@@ -192,9 +212,11 @@ document.addEventListener('click', event => {
     $('#match-search').focus({ preventScroll: true });
   }
   if (event.target.closest('[data-reset]')) { resetFilters(); $('#match-search').focus(); }
+  if (event.target.closest('[data-reset-games]')) { state.gameSearch = ''; $('#game-search').value = ''; renderGames(); $('#game-search').focus(); }
   if (event.target.closest('[data-retry]')) loadData();
 });
 $('#match-search').addEventListener('input', event => { state.search = event.target.value; renderMatches(); });
+$('#game-search').addEventListener('input', event => { state.gameSearch = event.target.value; renderGames(); });
 $('#match-status').addEventListener('change', event => { state.status = event.target.value; renderMatches(); });
 
 // Refresh only data that changed; filters and open rules survive periodic updates.

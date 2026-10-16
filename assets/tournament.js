@@ -11,8 +11,16 @@ export function plural(number, forms) {
   return forms[n > 10 && n < 20 ? 2 : last === 1 ? 0 : last > 1 && last < 5 ? 1 : 2];
 }
 
-export function parsePlayers(text) {
+function parseLineList(text) {
   return [...new Set(text.replace(/^\uFEFF/, '').split(/\r?\n/).map(line => line.trim()).filter(Boolean))];
+}
+
+export function parsePlayers(text) {
+  return parseLineList(text);
+}
+
+export function parseGames(text) {
+  return parseLineList(text);
 }
 
 export function matchState(match) {
