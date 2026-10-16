@@ -7,21 +7,6 @@ const failures = new Set();
 const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const pad = number => String(number).padStart(2, '0');
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
-const colors = ['#c0fa79', '#b9a0ef', '#f6ac73', '#84cdd3', '#dca1b5', '#b9cb8b'];
-
-function avatar(name) {
-  let hash = 2166136261;
-  for (const char of name) hash = Math.imul(hash ^ char.codePointAt(0), 16777619) >>> 0;
-  const color = colors[hash % colors.length];
-  let pixels = '';
-  for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) {
-    if ((hash >>> ((y * 3 + x) % 24)) & 1) {
-      pixels += `<rect x="${x + 1}" y="${y + 1}" width="1" height="1"/>`;
-      if (x !== 2) pixels += `<rect x="${5 - x}" y="${y + 1}" width="1" height="1"/>`;
-    }
-  }
-  return `<span class="avatar" style="--avatar-color:${color}" aria-hidden="true"><svg viewBox="0 0 7 7">${pixels}</svg></span>`;
-}
 
 function statusLabel(status) {
   return { completed: 'Завершён', pending: 'Ожидается', tied: 'Счёт равный' }[status];
@@ -32,8 +17,8 @@ function singleCard(match) {
   return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
     <div class="match-card-top"><span>МАТЧ ${pad(match.number)}</span><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>
     ${match.players.map((player, index) => `<div class="contestant${result.winner === index ? ' winner' : ''}">
-      ${avatar(player)}<span class="contestant-name">${esc(player)}</span>
-      ${result.winner === index ? '<span class="winner-arrow" aria-hidden="true">◀</span><span class="sr-only">Победитель.</span>' : ''}
+      <span class="contestant-name">${esc(player)}</span>
+      ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
       <span class="score${match.scores[index] === null ? ' pending-score' : ''}" aria-label="${match.scores[index] === null ? 'Счёт пока не указан' : `Очки: ${match.scores[index]}`}">${match.scores[index] ?? '—'}</span>
     </div>`).join('')}
   </article>`;
@@ -110,7 +95,7 @@ function renderPlayers() {
   $('#player-count').textContent = count;
   $('#player-count-word').textContent = plural(count, ['участник', 'участника', 'участников']);
   $('#players-total').textContent = count;
-  $('#players-list').innerHTML = count ? state.players.map((name, index) => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}">${avatar(name)}<span class="player-name">${esc(name)}</span><span class="player-number" aria-hidden="true">${pad(index + 1)}</span></button>`).join('') : '<p class="loading-message">Список участников скоро появится.</p>';
+  $('#players-list').innerHTML = count ? state.players.map((name, index) => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}"><span class="player-name">${esc(name)}</span><span class="player-number" aria-hidden="true">${pad(index + 1)}</span></button>`).join('') : '<p class="loading-message">Список участников скоро появится.</p>';
   $('#players-list').setAttribute('aria-busy', 'false');
 }
 
