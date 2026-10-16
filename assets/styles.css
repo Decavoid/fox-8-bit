@@ -146,7 +146,8 @@ h1>span{color:var(--accent)}
 .podium-card .icon{margin-left:auto;color:var(--accent);width:27px;height:27px;align-self:flex-start}.podium-card[data-place="1"] .icon{color:var(--accent)}
 .podium-card[data-place="2"] .podium-place,.podium-card[data-place="2"] .icon{color:#c0c0c0}
 .podium-card[data-place="3"] .podium-place,.podium-card[data-place="3"] .icon{color:#cd7f32}
-.podium-label{position:absolute;right:16px;top:-9px;padding-inline:8px;background:var(--accent-dim);color:var(--accent);font-size:9px;letter-spacing:1px;font-family:var(--mono)}
+/* Integer height/offset keep the frame crisp; top padding balances the uppercase glyphs. */
+.podium-label{position:absolute;right:16px;top:-9px;height:17px;display:flex;align-items:center;border:1px solid var(--match-winner);padding:2px 8px 0;background:var(--accent-dim);color:var(--accent);font-size:9px;line-height:1;letter-spacing:1px;font-family:var(--mono);white-space:nowrap}
 .podium-name.unannounced{font-size:13px;color:var(--muted);font-weight:400}
 .count-badge{display:inline-grid;place-items:center;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);font-size:14px;font-weight:600;min-width:31px;height:29px;margin-left:9px;vertical-align:middle;letter-spacing:0}
 .players-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
