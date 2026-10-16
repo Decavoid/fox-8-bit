@@ -107,6 +107,8 @@ h1>span{color:var(--accent)}
 .contestant,.group-game{display:flex;align-items:center;gap:8px;min-width:0;min-height:42px;margin-inline:calc(-1 * var(--card-padding));padding:0 var(--card-padding);color:var(--text-soft)}
 .contestant+.contestant,.group-game+.group-game{margin-top:2px}
 .contestant-name,.group-player{font-size:36px;font-weight:600;line-height:1.4;overflow-wrap:anywhere;min-width:0}
+/* Let the score boxes define single-match row height for even 10px card insets. */
+.contestant-name{line-height:1}
 .contestant.winner,.group-player.winner{color:var(--match-accent)}
 .contestant.loser,.group-player.loser{color:#a8a6a0}
 .score{font-family:var(--pixel);font-weight:400;font-synthesis:none;font-size:32px;line-height:1;margin-left:auto;display:grid;place-items:center;min-width:42px;min-height:42px;padding-inline:6px;background:#32281b;color:#c8b394;flex-shrink:0;border:1px solid #594126}
