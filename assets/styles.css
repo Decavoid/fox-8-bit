@@ -68,7 +68,7 @@ h1>span{color:var(--hero-accent)}
 .hero-date{grid-area:date;justify-self:start;max-width:100%}
 .hero-date strong{display:block;font-family:'Nihonium 113',var(--display);font-size:clamp(40px,6vw,80px);font-weight:400;line-height:1.1;letter-spacing:-2px;text-transform:capitalize}
 
-.event-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#191d1770}
+.event-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#1f1d16}
 .event-stats{display:grid;grid-template-columns:1fr 1fr 1fr;padding-block:26px}
 .event-stat{display:flex;align-items:center;gap:20px;position:relative}
 .event-stat:not(:first-child){padding-left:40px;border-left:1px solid var(--line)}
@@ -78,7 +78,7 @@ h1>span{color:var(--hero-accent)}
 .event-stat>div>span{font-size:11px;color:var(--muted)}
 .stat-unit{font-weight:500;font-size:16px;letter-spacing:0}
 .stat-slash{font-weight:400;color:#5d6754;font-size:19px;margin-inline:3px}
-.stat-trophy{margin-left:auto;margin-right:32px;color:var(--green);width:29px;height:29px}
+.stat-trophy{margin-left:auto;margin-right:32px;color:#ff8d00;width:29px;height:29px}
 
 .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:31px}
 .section-kicker{font-family:var(--mono);color:var(--green);font-size:10px;letter-spacing:1.5px;display:flex;align-items:center;gap:12px;margin-bottom:13px;font-weight:400}
