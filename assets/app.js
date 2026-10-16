@@ -1,7 +1,8 @@
 import { escapeHtml as esc, plural, parsePlayers, parseGames, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
 
 const $ = selector => document.querySelector(selector);
-const state = { scores: null, players: null, games: null, rules: null, stage: 'all', search: '', gameSearch: '', status: 'all', loading: false };
+const state = { scores: null, players: null, games: null, rules: null, stage: 'all', search: '', gameSearch: '', gamesExpanded: false, status: 'all', loading: false };
+const gamesMobile = window.matchMedia('(max-width: 660px)');
 const previous = new Map();
 const failures = new Set();
 const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
@@ -102,8 +103,15 @@ function renderGames() {
   if (!state.games) return;
   const query = state.gameSearch.trim().toLocaleLowerCase('ru-RU');
   const games = state.games.map((name, index) => ({ name, number: index + 1 })).filter(game => game.name.toLocaleLowerCase('ru-RU').includes(query));
-  $('#games-result').textContent = query ? `Найдено: ${games.length} из ${state.games.length}` : `${state.games.length} ${plural(state.games.length, ['игра', 'игры', 'игр'])} в списке`;
-  $('#games-list').innerHTML = games.length ? `<ol class="games-grid" aria-label="Список игр">${games.map(game => `<li class="game-item" value="${game.number}"><span class="game-number" aria-hidden="true">${pad(game.number)}</span><span class="game-name">${esc(game.name)}</span></li>`).join('')}</ol>` : state.games.length ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое название или сбрось поиск.</p><button type="button" class="reset-button" data-reset-games>Сбросить поиск</button></div>' : '<p class="loading-message">Список игр скоро появится.</p>';
+  const limit = gamesMobile.matches ? 6 : 12;
+  // Search always exposes every match; clearing it restores the chosen preview state.
+  const visibleGames = query || state.gamesExpanded ? games : games.slice(0, limit);
+  $('#games-result').textContent = query ? `Найдено: ${games.length} из ${state.games.length}` : `Показано ${visibleGames.length} из ${state.games.length} ${plural(state.games.length, ['игры', 'игр', 'игр'])}`;
+  $('#games-list').innerHTML = games.length ? `<ol class="games-grid" aria-label="Список игр">${visibleGames.map(game => `<li class="game-item" value="${game.number}"><span class="game-number" aria-hidden="true">${pad(game.number)}</span><span class="game-name">${esc(game.name)}</span></li>`).join('')}</ol>` : state.games.length ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое название или сбрось поиск.</p><button type="button" class="reset-button" data-reset-games>Сбросить поиск</button></div>' : '<p class="loading-message">Список игр скоро появится.</p>';
+  const toggle = $('#games-toggle');
+  toggle.hidden = Boolean(query) || games.length <= limit;
+  toggle.setAttribute('aria-expanded', String(Boolean(query) || state.gamesExpanded));
+  toggle.textContent = state.gamesExpanded ? 'Свернуть' : `Показать все ${state.games.length} ${plural(state.games.length, ['игру', 'игры', 'игр'])}`;
   $('#games-list').setAttribute('aria-busy', 'false');
   renderGamesNotice();
 }
@@ -209,6 +217,13 @@ document.addEventListener('click', event => {
 });
 $('#match-search').addEventListener('input', event => { state.search = event.target.value; renderMatches(); });
 $('#game-search').addEventListener('input', event => { state.gameSearch = event.target.value; renderGames(); });
+$('#games-toggle').addEventListener('click', () => {
+  state.gamesExpanded = !state.gamesExpanded;
+  renderGames();
+  // Return to the preview when collapsing a long list from its bottom.
+  if (!state.gamesExpanded) $('#games').scrollIntoView({ block: 'start', behavior: 'instant' });
+});
+gamesMobile.addEventListener('change', renderGames);
 $('#match-status').addEventListener('change', event => { state.status = event.target.value; renderMatches(); });
 
 // Refresh only data that changed; filters and open rules survive periodic updates.
