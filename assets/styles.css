@@ -180,7 +180,7 @@ h1>span{color:var(--accent)}
 .rule-accordion summary::-webkit-details-marker{display:none}
 .rule-accordion summary::after{content:"";margin-left:auto;margin-right:12px;flex-shrink:0;width:20px;height:20px;background-color:var(--text-soft);mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 3h20L12 21Z' fill='black'/%3E%3C/svg%3E") center/contain no-repeat}
 .rule-accordion[open] summary::after{transform:rotate(180deg)}
-.rule-body{font-size:12px;line-height:1.9;color:var(--text-soft);padding:0 30px 23px 0;overflow-wrap:anywhere}
+.rule-body{font-size:12px;line-height:1.9;color:var(--text-soft);padding:0 30px 23px 10px;overflow-wrap:anywhere}
 .rule-body p+p{margin-top:15px}.rule-body h3,.rule-body h4,.rule-body h5,.rule-body h6{font-family:var(--pixel);font-size:20px;font-weight:400;font-synthesis:none;line-height:1.4;color:var(--ink);margin:18px 0 9px}.rule-body h3:first-child{margin-top:0}
 .rule-body :is(h3,h4,h5,h6) strong{font-weight:inherit}
 .rule-body strong{font-weight:600;color:var(--ink)}.rule-body ul,.rule-body ol{padding-left:20px}.rule-body a{color:var(--accent);text-decoration:underline}.rule-body code{color:var(--accent);background:var(--accent-dim);padding:1px 4px}.rule-body blockquote{margin-inline:0;padding-left:16px;border-left:2px solid var(--accent-border)}
