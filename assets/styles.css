@@ -141,6 +141,8 @@ h1>span{color:var(--accent)}
 .podium-place::before{content:"#";font-family:var(--mono);font-size:13px;position:absolute;left:-9px;top:0;color:var(--text-subtle)}
 .podium-card[data-place="1"] .podium-place{color:var(--accent);font-size:56px}
 .podium-info{min-width:0}.podium-name{font-size:34px;font-weight:600;overflow-wrap:anywhere;line-height:1.4}.podium-money{font-size:12px;color:var(--text-soft);margin-top:5px}.podium-card[data-place="1"] .podium-money{color:var(--accent)}
+/* Tuck rewards beneath the pixel glyphs without shifting the names or cards. */
+.podium-name:not(.unannounced)+.podium-money{position:relative;top:-14px}
 .podium-card .icon{margin-left:auto;color:var(--accent);width:27px;height:27px;align-self:flex-start}.podium-card[data-place="1"] .icon{color:var(--accent)}
 .podium-card[data-place="2"] .podium-place,.podium-card[data-place="2"] .icon{color:#c0c0c0}
 .podium-card[data-place="3"] .podium-place,.podium-card[data-place="3"] .icon{color:#cd7f32}
