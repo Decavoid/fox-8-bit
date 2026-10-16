@@ -6,7 +6,7 @@
 /* Nihonium lacks ₽; match the fallback symbol to the pixel digits' visible height. */
 @font-face{font-family:'Stat currency';src:url('fonts/golos-extrabold.ttf') format('truetype');font-weight:400;font-display:swap;unicode-range:U+20BD;size-adjust:66.6667%}
 
-:root{color-scheme:dark;--bg:#14120f;--panel:#1f1d16;--panel-light:#2b2318;--line:#443524;--ink:#f4efe5;--muted:#b4a58f;--accent:#ff8d00;--accent-dim:#322313;--accent-hover:#ffad33;--accent-border:#80552c;--accent-shadow:#80500f;--panel-deep:#191611;--text-soft:#c9b89f;--text-subtle:#a18e75;--orange:#f6ac73;--match-panel:#1f1d16;--match-border:#4d3015;--match-winner:#ae671a;--match-accent:#ffcf8a;--font:Golos,Arial,sans-serif;--display:Russo,'Arial Black',sans-serif;--pixel:'Nihonium 113',var(--display);--mono:'Cascadia Code','SFMono-Regular',Consolas,monospace}
+:root{color-scheme:dark;--bg:#14120f;--panel:#1f1d16;--panel-light:#2b2318;--line:#443524;--ink:#f4efe5;--muted:#b4a58f;--accent:#ff8d00;--accent-dim:#322313;--accent-hover:#ffad33;--accent-border:#80552c;--accent-shadow:#80500f;--panel-deep:#191611;--text-soft:#c9b89f;--text-subtle:#a18e75;--orange:#f6ac73;--match-panel:#191611;--match-border:#4d3015;--match-winner:#ae671a;--match-accent:#ffcf8a;--font:Golos,Arial,sans-serif;--display:Russo,'Arial Black',sans-serif;--pixel:'Nihonium 113',var(--display);--mono:'Cascadia Code','SFMono-Regular',Consolas,monospace}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:105px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
