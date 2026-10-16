@@ -105,6 +105,22 @@ test('Markdown handles formatting but escapes HTML and rejects active URLs', () 
   assert.equal(inlineMarkdown('1\\. Текст'), '1. Текст');
 });
 
+test('rules headings omit subsection numbers only when rendering for display', async () => {
+  const rules = parseRules(await source('fixtures/rules.md'));
+  const body = rules.sections[2].body;
+  const html = renderMarkdown(body, { stripHeadingNumbers: true });
+  assert.match(html, /<h3><strong>Начало раунда<\/strong><\/h3>/);
+  assert.match(html, /<h3><strong>Игра<\/strong><\/h3>/);
+  assert.match(body, /### \*\*3\.1 Начало раунда\*\*/);
+  assert.match(renderMarkdown(body), /<strong>3\.1 Начало раунда<\/strong>/);
+  const mixed = renderMarkdown('### 3.1 Начало\n\n#### __3.2.1 Игра__\n\n### 8 бит\n\nСм. 3.1 и **3.2**.\n\n1. Первый пункт', { stripHeadingNumbers: true });
+  assert.match(mixed, /<h3>Начало<\/h3>/);
+  assert.match(mixed, /<h4><strong>Игра<\/strong><\/h4>/);
+  assert.match(mixed, /<h3>8 бит<\/h3>/);
+  assert.match(mixed, /<p>См. 3\.1 и <strong>3\.2<\/strong>.<\/p>/);
+  assert.match(mixed, /<ol><li>Первый пункт<\/li><\/ol>/);
+});
+
 test('players are trimmed and deduplicated without changing nickname punctuation', () => {
   assert.deepEqual(parsePlayers('\uFEFFLux Ferre\r\n\nMr(A)ked\nLux Ferre\n Frank_Filter '), ['Lux Ferre', 'Mr(A)ked', 'Frank_Filter']);
 });

@@ -183,7 +183,7 @@ export function inlineMarkdown(text) {
   return html + escapeHtml(text.slice(start));
 }
 
-export function renderMarkdown(source) {
+export function renderMarkdown(source, { stripHeadingNumbers = false } = {}) {
   const blocks = [];
   let paragraph = [];
   let list = [];
@@ -195,7 +195,14 @@ export function renderMarkdown(source) {
     const heading = line.match(/^(#{1,6})\s+(.+)/);
     const item = line.match(/^\s*(?:([-+*])|\d+[.)])\s+(.+)/);
     if (!line.trim()) { flushParagraph(); flushList(); }
-    else if (heading) { flushParagraph(); flushList(); const level = Math.max(3, heading[1].length); blocks.push(`<h${level}>${inlineMarkdown(heading[2])}</h${level}>`); }
+    else if (heading) {
+      flushParagraph(); flushList();
+      const level = Math.max(3, heading[1].length);
+      const title = stripHeadingNumbers
+        ? heading[2].replace(/^(\*\*|__)?\d+(?:\.\d+)+\.?\s+/, '$1')
+        : heading[2];
+      blocks.push(`<h${level}>${inlineMarkdown(title)}</h${level}>`);
+    }
     else if (item) { flushParagraph(); const type = item[1] ? 'ul' : 'ol'; if (listType && listType !== type) flushList(); listType = type; list.push(item[2]); }
     else if (/^>\s?/.test(line)) { flushParagraph(); flushList(); blocks.push(`<blockquote>${inlineMarkdown(line.replace(/^>\s?/, ''))}</blockquote>`); }
     else if (/^\s*(?:---+|\*\*\*+)\s*$/.test(line)) { flushParagraph(); flushList(); blocks.push('<hr>'); }

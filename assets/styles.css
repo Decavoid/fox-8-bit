@@ -184,7 +184,8 @@ h1>span{color:var(--hero-accent)}
 .rule-accordion summary::after{content:"+";margin-left:auto;flex-shrink:0;font-family:var(--mono);font-size:24px;color:var(--text-soft);font-weight:400;line-height:1}
 .rule-accordion[open] summary::after{content:"−";color:var(--accent)}
 .rule-body{font-size:12px;line-height:1.9;color:var(--text-soft);padding:0 30px 23px 0;overflow-wrap:anywhere}
-.rule-body p+p{margin-top:15px}.rule-body h3,.rule-body h4,.rule-body h5,.rule-body h6{font-size:13px;font-weight:600;color:var(--ink);margin:18px 0 9px}.rule-body h3:first-child{margin-top:0}
+.rule-body p+p{margin-top:15px}.rule-body h3,.rule-body h4,.rule-body h5,.rule-body h6{font-family:var(--pixel);font-size:20px;font-weight:400;font-synthesis:none;line-height:1.4;color:var(--ink);margin:18px 0 9px}.rule-body h3:first-child{margin-top:0}
+.rule-body :is(h3,h4,h5,h6) strong{font-weight:inherit}
 .rule-body strong{font-weight:600;color:var(--ink)}.rule-body ul,.rule-body ol{padding-left:20px}.rule-body a{color:var(--accent);text-decoration:underline}.rule-body code{color:var(--accent);background:var(--accent-dim);padding:1px 4px}.rule-body blockquote{margin-inline:0;padding-left:16px;border-left:2px solid var(--accent-border)}
 .rule-preamble{padding-left:0}
 

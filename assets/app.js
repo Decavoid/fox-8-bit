@@ -128,7 +128,7 @@ function renderRules() {
   $('#event-date').textContent = rules.dateLabel || 'Даты в правилах';
   $('#event-date-note').textContent = rules.dateNote || 'Все подробности о проведении турнира';
   $('#prize-total').textContent = rules.prizeTotal == null ? 'Призы турнира' : rubles(rules.prizeTotal);
-  $('#rules-content').innerHTML = (rules.preamble ? `<div class="rule-body rule-preamble">${renderMarkdown(rules.preamble)}</div>` : '') + rules.sections.map((section, index) => `<details class="rule-accordion" data-rule-title="${esc(section.title)}"${(hadRules ? openTitles.includes(section.title) : index === 0) ? ' open' : ''}><summary>${esc(section.title)}</summary><div class="rule-body">${renderMarkdown(section.body)}</div></details>`).join('') || '<p class="loading-message">Правила скоро появятся.</p>';
+  $('#rules-content').innerHTML = (rules.preamble ? `<div class="rule-body rule-preamble">${renderMarkdown(rules.preamble)}</div>` : '') + rules.sections.map((section, index) => `<details class="rule-accordion" data-rule-title="${esc(section.title)}"${(hadRules ? openTitles.includes(section.title) : index === 0) ? ' open' : ''}><summary>${esc(section.title)}</summary><div class="rule-body">${renderMarkdown(section.body, { stripHeadingNumbers: true })}</div></details>`).join('') || '<p class="loading-message">Правила скоро появятся.</p>';
   $('#rules-content').setAttribute('aria-busy', 'false');
 }
 
