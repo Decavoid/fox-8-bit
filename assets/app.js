@@ -103,7 +103,7 @@ function renderGames() {
   const query = state.gameSearch.trim().toLocaleLowerCase('ru-RU');
   const games = state.games.map((name, index) => ({ name, number: index + 1 })).filter(game => game.name.toLocaleLowerCase('ru-RU').includes(query));
   $('#games-result').textContent = query ? `Найдено: ${games.length} из ${state.games.length}` : `${state.games.length} ${plural(state.games.length, ['игра', 'игры', 'игр'])} в списке`;
-  $('#games-list').innerHTML = games.length ? `<ol class="games-grid" aria-label="Игры NES / Famicom">${games.map(game => `<li class="game-item" value="${game.number}"><span class="game-number" aria-hidden="true">${pad(game.number)}</span><span class="game-name">${esc(game.name)}</span></li>`).join('')}</ol>` : state.games.length ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое название или сбрось поиск.</p><button type="button" class="reset-button" data-reset-games>Сбросить поиск</button></div>' : '<p class="loading-message">Список игр скоро появится.</p>';
+  $('#games-list').innerHTML = games.length ? `<ol class="games-grid" aria-label="Список игр">${games.map(game => `<li class="game-item" value="${game.number}"><span class="game-number" aria-hidden="true">${pad(game.number)}</span><span class="game-name">${esc(game.name)}</span></li>`).join('')}</ol>` : state.games.length ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое название или сбрось поиск.</p><button type="button" class="reset-button" data-reset-games>Сбросить поиск</button></div>' : '<p class="loading-message">Список игр скоро появится.</p>';
   $('#games-list').setAttribute('aria-busy', 'false');
   renderGamesNotice();
 }
