@@ -52,9 +52,6 @@ function renderStageFilters() {
 function renderMatches() {
   if (!state.scores) return;
   const board = $('#match-board');
-  const matches = state.scores.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches));
-  const completed = matches.filter(match => matchState(match).status === 'completed').length;
-  $('#match-progress').innerHTML = `<span class="progress-track" aria-hidden="true"><span class="progress-fill" style="width:${matches.length ? completed / matches.length * 100 : 0}%"></span></span>${completed} / ${matches.length} ${plural(matches.length, ['матч сыгран', 'матча сыграно', 'матчей сыграно'])}`;
   const stages = state.scores.stages.filter(stage => state.stage === 'all' || stage.id === state.stage);
   let anyMatches = false;
   const filtered = Boolean(state.search.trim()) || state.status !== 'all';
@@ -63,9 +60,8 @@ function renderMatches() {
     if (blocks.length) anyMatches = true;
     if (filtered && !blocks.length) return '';
     const count = blocks.reduce((total, block) => total + block.matches.length, 0);
-    const index = state.scores.stages.indexOf(stage) + 1;
     return `<section class="stage" aria-labelledby="${stage.id}-title">
-      <header class="stage-header"><span class="stage-num">${pad(index)}</span><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
+      <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
       <div class="stage-matches">${blocks.length ? blocks.map(block => block.type === 'group' ? groupCard(block) : singleCard(block.matches[0])).join('') : '<div class="stage-empty"><span class="empty-symbol" aria-hidden="true">[ ? ]</span>Соперники ещё не определены.<br>Здесь появятся следующие матчи.</div>'}</div>
     </section>`;
   }).join('');
@@ -171,7 +167,6 @@ async function loadData() {
           target.innerHTML = `<div class="error-state" role="status">Не удалось загрузить ${loader.label}. Проверь подключение и попробуй ещё раз.<button type="button" class="retry-button" data-retry>Повторить загрузку</button></div>`;
           target.setAttribute('aria-busy', 'false');
           if (key === 'scores') {
-            $('#match-progress').textContent = 'Результаты временно недоступны';
             $('#podium').innerHTML = '<p class="loading-message">Итоги появятся после загрузки результатов.</p>';
           }
           if (key === 'games') $('#games-result').textContent = 'Список временно недоступен';
