@@ -11,7 +11,7 @@
     <meta property="og:description" content="Старые игры. Новое соперничество. Все матчи, участники и правила турнира FoxyShadow.">
     <title>ВосьмиБитва — турнир NES / Famicom</title>
     <link rel="icon" href="assets/favicon.png" type="image/png">
-    <link rel="preload" href="assets/fonts/russo-one.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
     <link rel="stylesheet" href="assets/styles.css">
     <script type="module" src="assets/app.js"></script>
   </head>
@@ -32,7 +32,7 @@
       <div class="container header-inner">
         <a href="#" class="brand" aria-label="ВосьмиБитва — главная">
           <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 2h8v4h8V2h8v14h-4v8h-4v4h-8v-4H8v-8H4Z" fill="currentColor"/><path d="M8 10h4v4H8Zm12 0h4v4h-4Zm-8 10h8v4h-8Z" fill="#101211"/></svg>
-          <span>ВОСЬМИ<span class="accent">БИТВА</span></span>
+          <span>Восьми<span class="accent">Битва</span></span>
         </a>
         <nav class="main-nav" aria-label="Основная навигация">
           <a href="#matches">Матчи</a>
@@ -45,27 +45,12 @@
 
     <main id="main">
       <section class="hero container" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <div class="eyebrow"><span class="tiny-cross" aria-hidden="true">✚</span> ТУРНИР NES / FAMICOM <span class="eyebrow-divider"></span> FOXYSHADOW</div>
-          <h1 id="hero-title">ВОСЬМИ<span>БИТВА<span class="title-period">.</span></span></h1>
-          <p class="hero-tagline">Старые игры. Новое соперничество.</p>
-          <p class="hero-description">Знакомые миры, случайные задания и борьба<br class="desktop-break"> до последнего пикселя. Встречаемся на турнире!</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#matches">К турнирной сетке <svg class="icon"><use href="#icon-arrow"/></svg></a>
-            <a class="button button-quiet" href="#broadcast"><svg class="icon"><use href="#icon-play"/></svg> Смотреть эфир</a>
-          </div>
-          <a class="hero-date" href="#rules"><span class="calendar-pixel" aria-hidden="true">▦</span><span><strong id="event-date">Даты в правилах</strong><span id="event-date-note">Все подробности о проведении турнира</span></span><svg class="icon"><use href="#icon-external"/></svg></a>
-        </div>
-        <div class="hero-art" role="img" aria-label="Ретро-геймпад NES на фоне пиксельной аркады">
-          <div class="art-grid"></div>
-          <span class="art-corner corner-tl"></span><span class="art-corner corner-tr"></span><span class="art-corner corner-bl"></span><span class="art-corner corner-br"></span>
-          <div class="art-topline"><span><i class="status-dot"></i> ГОТОВ К ИГРЕ</span><span>8-BIT</span></div>
-          <span class="pixel-spark spark-one" aria-hidden="true"></span><span class="pixel-spark spark-two" aria-hidden="true"></span><span class="pixel-spark spark-three" aria-hidden="true"></span>
-          <span class="art-orbit" aria-hidden="true"></span>
-          <div class="art-number" aria-hidden="true">08</div>
-          <img class="controller" src="assets/controller.svg" alt="" width="620" height="410" fetchpriority="high">
-          <div class="art-sticker" aria-hidden="true"><span>ЭПОХА</span><strong>8 БИТ</strong></div>
-          <div class="art-bottomline"><span>НАЖМИ START.<br><strong>ВПИШИ СЕБЯ В ИСТОРИЮ.</strong></span><span class="art-lives" aria-hidden="true">♥ ♥ ♥</span></div>
+        <div class="eyebrow"><span class="tiny-cross" aria-hidden="true">✚</span> ТУРНИР NES / FAMICOM <span class="eyebrow-divider"></span> FOXYSHADOW</div>
+        <h1 id="hero-title">Восьми<span>Битва</span></h1>
+        <a class="hero-date" href="#rules"><strong id="event-date">Даты в правилах</strong><span id="event-date-note" class="sr-only">Все подробности о проведении турнира</span></a>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#matches">К турнирной сетке <svg class="icon"><use href="#icon-arrow"/></svg></a>
+          <a class="button button-quiet" href="#broadcast"><svg class="icon"><use href="#icon-play"/></svg> Смотреть эфир</a>
         </div>
       </section>
 
@@ -122,7 +107,7 @@
       </section>
     </main>
 
-    <footer class="site-footer container"><a class="brand footer-brand" href="#"><img src="assets/favicon.svg" width="28" height="28" alt=""><span>ВОСЬМИ<span class="accent">БИТВА</span></span></a><p>Турнир от <a href="https://www.twitch.tv/foxyshadow" target="_blank" rel="noopener noreferrer">FoxyShadow</a>. Сделано с любовью к 8 битам.</p><a href="#" class="back-top">Наверх ↑</a></footer>
+    <footer class="site-footer container"><a class="brand footer-brand" href="#"><img src="assets/favicon.svg" width="28" height="28" alt=""><span>Восьми<span class="accent">Битва</span></span></a><p>Турнир от <a href="https://www.twitch.tv/foxyshadow" target="_blank" rel="noopener noreferrer">FoxyShadow</a>. Сделано с любовью к 8 битам.</p><a href="#" class="back-top">Наверх ↑</a></footer>
     <noscript><div class="noscript-notice">Для интерактивной сетки нужен JavaScript. Все данные доступны напрямую: <a href="data/scores.txt">результаты</a>, <a href="data/players.txt">участники</a>, <a href="data/rules.md">правила</a>.</div></noscript>
   </body>
 </html>
