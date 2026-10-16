@@ -33,7 +33,7 @@ function groupCard(block) {
         const result = matchState(match);
         return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
           <span class="group-player${result.winner === 0 ? ' winner' : ''}">${esc(match.players[0])}</span>
-          <span class="group-score" aria-hidden="true"><span>${match.scores[0] ?? '—'}</span><span class="score-separator">:</span><span>${match.scores[1] ?? '—'}</span></span>
+          <span class="score group-score" aria-hidden="true"><span>${match.scores[0] ?? '—'}</span><span class="score-separator">:</span><span>${match.scores[1] ?? '—'}</span></span>
           <span class="group-player${result.winner === 1 ? ' winner' : ''}">${esc(match.players[1])}</span>
         </div>`;
       }).join('')}
