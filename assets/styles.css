@@ -79,8 +79,8 @@ h1>span{color:var(--accent)}
 
 .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:31px}
 .section.matches-section{padding-block:16px 24px}
-#players{padding-top:16px}
-.matches-section .section-heading,.awards-section .section-heading,#players .section-heading{margin-bottom:12px}
+#players{padding-block:16px 24px}
+.matches-section .section-heading,.awards-section .section-heading,#players .section-heading,.games-section .section-heading{margin-bottom:12px}
 .section-kicker{font-family:var(--mono);color:var(--accent);font-size:10px;letter-spacing:1.5px;display:flex;align-items:center;gap:12px;margin-bottom:13px;font-weight:400}
 .section-kicker>span:not(.status-dot){width:22px;height:1px;background:var(--accent-border)}
 .section-description{font-size:12px;line-height:1.8;color:var(--muted);padding-bottom:3px}
@@ -154,10 +154,10 @@ h1>span{color:var(--accent)}
 .player-button{display:flex;align-items:center;justify-content:center;text-align:center;background:var(--panel-deep);border:1px solid var(--line);padding:16px 12px;min-width:0;transition:border-color .15s,background .15s}
 .player-button:hover{border-color:var(--accent-border);background:var(--accent-dim)}
 .player-name{font-size:36px;line-height:1.1;min-width:0;overflow-wrap:anywhere}
-.players-total{margin-top:16px;font-family:var(--pixel);font-size:32px;font-size:round(nearest,clamp(32px,3.6vw,44px),2px);font-weight:400;font-synthesis:none;line-height:1.2;letter-spacing:0}
 .contestant-name,.player-name,.podium-name:not(.unannounced){font-family:var(--pixel);font-weight:400;font-synthesis:none}
 
 .games-section{border-top:1px solid var(--line)}
+.section.games-section{padding-top:16px}
 .games-toolbar{display:flex;align-items:center;gap:16px 24px;flex-wrap:wrap;margin-bottom:24px}
 .games-toolbar .search-field{width:min(100%,320px);height:42px;flex:none}
 .games-toolbar .search-field input{width:100%;min-width:0;font-size:13px}
