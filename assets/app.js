@@ -87,8 +87,9 @@ function renderPlayers() {
   const count = state.players.length;
   $('#player-count').textContent = count;
   $('#player-count-word').textContent = plural(count, ['участник', 'участника', 'участников']);
-  $('#players-total').textContent = count;
-  $('#players-list').innerHTML = count ? state.players.map((name, index) => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}"><span class="player-name">${esc(name)}</span><span class="player-number" aria-hidden="true">${pad(index + 1)}</span></button>`).join('') : '<p class="loading-message">Список участников скоро появится.</p>';
+  $('#players-total').textContent = `${count} ${plural(count, ['участник', 'участника', 'участников'])}`;
+  $('#players-total').hidden = false;
+  $('#players-list').innerHTML = count ? state.players.map(name => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}"><span class="player-name">${esc(name)}</span></button>`).join('') : '<p class="loading-message">Список участников скоро появится.</p>';
   $('#players-list').setAttribute('aria-busy', 'false');
 }
 
