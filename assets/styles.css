@@ -146,7 +146,7 @@ h1>span{color:var(--hero-accent)}
 .retry-button:hover,.reset-button:hover{background:var(--accent-dim)}
 
 .awards-section{padding-block:53px 58px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel-deep)}
-.awards-section h2{font-size:30px}.awards-section .section-kicker{color:var(--accent);font-size:9px;letter-spacing:1.8px}
+.awards-section h2{font-size:30px}
 .awards-caption{font-size:11px;color:var(--muted);margin-bottom:3px}
 .podium{display:grid;grid-template-columns:1fr 1.18fr 1fr;gap:18px;align-items:end}
 .podium-card{position:relative;background:var(--panel);border:1px solid var(--line);padding:25px 24px;min-width:0;display:flex;align-items:center;gap:19px;min-height:111px}
