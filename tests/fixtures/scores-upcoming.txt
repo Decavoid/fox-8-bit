@@ -1,0 +1,27 @@
+## Раунд 1
+Player 1       | Score | Player 2     | Score
+
+Deeper         | 1     | neradimo     | 2
+
+odzman         | 2     | Hanter       | 1
+
+Lux Ferre      | 0     | Frank_Filter | 0
+
+Serxio         |       | Billy        |
+
+dilat          |       | Mr(A)ked     |
+dilat          |       | arcade_user  |
+Mr(A)ked       |       | arcade_user  |
+
+## Полуфиналы
+Player 1       | Score | Player 2     | Score
+
+## Финал
+Player 1       | Score | Player 2       | Score
+
+## Победители
+Place   | Player
+
+1       |
+2       |
+3       |

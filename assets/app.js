@@ -1,0 +1,221 @@
+import { escapeHtml as esc, plural, parsePlayers, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
+
+const $ = selector => document.querySelector(selector);
+const state = { scores: null, players: null, rules: null, stage: 'all', search: '', status: 'all', loading: false };
+const previous = new Map();
+const failures = new Set();
+const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
+const pad = number => String(number).padStart(2, '0');
+const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
+const colors = ['#c0fa79', '#b9a0ef', '#f6ac73', '#84cdd3', '#dca1b5', '#b9cb8b'];
+
+function avatar(name) {
+  let hash = 2166136261;
+  for (const char of name) hash = Math.imul(hash ^ char.codePointAt(0), 16777619) >>> 0;
+  const color = colors[hash % colors.length];
+  let pixels = '';
+  for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) {
+    if ((hash >>> ((y * 3 + x) % 24)) & 1) {
+      pixels += `<rect x="${x + 1}" y="${y + 1}" width="1" height="1"/>`;
+      if (x !== 2) pixels += `<rect x="${5 - x}" y="${y + 1}" width="1" height="1"/>`;
+    }
+  }
+  return `<span class="avatar" style="--avatar-color:${color}" aria-hidden="true"><svg viewBox="0 0 7 7">${pixels}</svg></span>`;
+}
+
+function statusLabel(status) {
+  return { completed: 'Завершён', pending: 'Ожидается', tied: 'Счёт равный' }[status];
+}
+
+function singleCard(match) {
+  const result = matchState(match);
+  return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
+    <div class="match-card-top"><span>МАТЧ ${pad(match.number)}</span><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>
+    ${match.players.map((player, index) => `<div class="contestant${result.winner === index ? ' winner' : ''}">
+      ${avatar(player)}<span class="contestant-name">${esc(player)}</span>
+      ${result.winner === index ? '<span class="winner-arrow" aria-hidden="true">◀</span><span class="sr-only">Победитель.</span>' : ''}
+      <span class="score${match.scores[index] === null ? ' pending-score' : ''}" aria-label="${match.scores[index] === null ? 'Счёт пока не указан' : `Очки: ${match.scores[index]}`}">${match.scores[index] ?? '—'}</span>
+    </div>`).join('')}
+  </article>`;
+}
+
+function groupCard(block, stage) {
+  const standings = groupStandings(block.matches);
+  const isFinal = /^финал(?:\s|$)/iu.test(stage.title);
+  let note = 'Два победителя определятся после всех матчей группы.';
+  if (standings.replay) note = 'У всех по одной победе — требуется переигровка группы.';
+  else if (standings.winners.length) note = `${isFinal ? 'Лидеры группы' : 'Проходят дальше'}: <strong>${standings.winners.map(esc).join('</strong> и <strong>')}</strong>`;
+  return `<article class="match-card group-card" aria-label="Группа из трёх игроков: ${esc(standings.standings.map(player => player.name).join(', '))}">
+    <div class="match-card-top"><span class="group-label">ГРУППА ИЗ ТРЁХ</span><span>МАТЧИ ${pad(block.matches[0].number)}–${pad(block.matches.at(-1).number)}</span></div>
+    <p class="group-hint">Каждый с каждым · ${isFinal ? 'борьба за пьедестал' : '2 игрока проходят дальше'}</p>
+    ${block.matches.map(match => {
+      const result = matchState(match);
+      return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
+        <span class="group-player${result.winner === 0 ? ' winner' : ''}">${esc(match.players[0])}</span>
+        <span class="group-score" aria-hidden="true"><span class="${result.winner === 0 ? 'win-score' : ''}">${match.scores[0] ?? '—'}</span><span class="score-separator">:</span><span class="${result.winner === 1 ? 'win-score' : ''}">${match.scores[1] ?? '—'}</span></span>
+        <span class="group-player${result.winner === 1 ? ' winner' : ''}">${esc(match.players[1])}</span>
+      </div>`;
+    }).join('')}
+    <div class="group-result${standings.replay ? ' needs-replay' : ''}">${note}</div>
+  </article>`;
+}
+
+function renderStageFilters() {
+  if (!state.scores) return;
+  const stages = [{ id: 'all', title: 'Все этапы' }, ...state.scores.stages];
+  if (!stages.some(stage => stage.id === state.stage)) state.stage = 'all';
+  $('#stage-filters').innerHTML = stages.map(stage => `<button type="button" class="filter-button" data-stage="${stage.id}" aria-pressed="${state.stage === stage.id}" aria-controls="match-board">${esc(stage.title)}</button>`).join('');
+}
+
+function renderMatches() {
+  if (!state.scores) return;
+  const board = $('#match-board');
+  const matches = state.scores.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches));
+  const completed = matches.filter(match => matchState(match).status === 'completed').length;
+  $('#match-progress').innerHTML = `<span class="progress-track" aria-hidden="true"><span class="progress-fill" style="width:${matches.length ? completed / matches.length * 100 : 0}%"></span></span>${completed} / ${matches.length} ${plural(matches.length, ['матч сыгран', 'матча сыграно', 'матчей сыграно'])}`;
+  const stages = state.scores.stages.filter(stage => state.stage === 'all' || stage.id === state.stage);
+  let anyMatches = false;
+  const filtered = Boolean(state.search.trim()) || state.status !== 'all';
+  const html = stages.map(stage => {
+    const blocks = filterBlocks(stage, state);
+    if (blocks.length) anyMatches = true;
+    if (filtered && !blocks.length) return '';
+    const count = blocks.reduce((total, block) => total + block.matches.length, 0);
+    const index = state.scores.stages.indexOf(stage) + 1;
+    return `<section class="stage" aria-labelledby="${stage.id}-title">
+      <header class="stage-header"><span class="stage-num">${pad(index)}</span><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
+      <div class="stage-matches">${blocks.length ? blocks.map(block => block.type === 'group' ? groupCard(block, stage) : singleCard(block.matches[0])).join('') : '<div class="stage-empty"><span class="empty-symbol" aria-hidden="true">[ ? ]</span>Соперники ещё не определены.<br>Здесь появятся следующие матчи.</div>'}</div>
+    </section>`;
+  }).join('');
+  board.classList.toggle('filtered-stage', state.stage !== 'all');
+  board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус матча.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
+  board.setAttribute('aria-busy', 'false');
+  renderScoresNotice();
+}
+
+function renderScoresNotice() {
+  const notice = $('#scores-notice');
+  if (failures.has('scores') && state.scores) {
+    notice.hidden = false;
+    notice.innerHTML = 'Не удалось обновить результаты. Показаны последние загруженные данные. <button type="button" class="retry-button" data-retry>Повторить загрузку</button>';
+  } else if (state.scores?.warnings.length) {
+    notice.hidden = false;
+    notice.textContent = `Некоторые записи требуют проверки. ${state.scores.warnings.join(' ')}`;
+  } else notice.hidden = true;
+}
+
+function renderPlayers() {
+  if (!state.players) return;
+  const count = state.players.length;
+  $('#player-count').textContent = count;
+  $('#player-count-word').textContent = plural(count, ['участник', 'участника', 'участников']);
+  $('#players-total').textContent = count;
+  $('#players-list').innerHTML = count ? state.players.map((name, index) => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}">${avatar(name)}<span class="player-name">${esc(name)}</span><span class="player-number" aria-hidden="true">${pad(index + 1)}</span></button>`).join('') : '<p class="loading-message">Список участников скоро появится.</p>';
+  $('#players-list').setAttribute('aria-busy', 'false');
+}
+
+function renderPodium() {
+  if (!state.scores) return;
+  $('#podium').innerHTML = [1, 2, 3].map(place => {
+    const name = state.scores.winners.find(winner => winner.place === place)?.name;
+    const payout = state.rules?.payouts[place];
+    return `<article class="podium-card" data-place="${place}" aria-label="${place}-е место${name ? `: ${esc(name)}` : ' ещё не определено'}">
+      ${place === 1 ? `<span class="podium-label">${name ? 'ЧЕМПИОН ТУРНИРА' : 'БУДУЩИЙ ЧЕМПИОН'}</span>` : ''}
+      <span class="podium-place" aria-hidden="true">${place}</span><div class="podium-info"><h3 class="podium-name${name ? '' : ' unannounced'}">${name ? esc(name) : 'Победитель ещё не определён'}</h3><p class="podium-money">${payout != null ? rubles(payout) : `${place}-е место`}</p></div>${icon('trophy')}
+    </article>`;
+  }).join('');
+}
+
+function renderRules() {
+  const rules = state.rules;
+  if (!rules) return;
+  const openTitles = [...document.querySelectorAll('.rule-accordion[open]')].map(details => details.dataset.ruleTitle);
+  const hadRules = Boolean($('#rules-content').querySelector('.rule-accordion'));
+  $('#event-date').textContent = rules.dateLabel || 'Даты в правилах';
+  $('#event-date-note').textContent = rules.dateNote || 'Все подробности о проведении турнира';
+  $('#prize-total').textContent = rules.prizeTotal == null ? 'Призы турнира' : rubles(rules.prizeTotal);
+  $('#rules-content').innerHTML = (rules.preamble ? `<div class="rule-body rule-preamble">${renderMarkdown(rules.preamble)}</div>` : '') + rules.sections.map((section, index) => `<details class="rule-accordion" data-rule-title="${esc(section.title)}"${(hadRules ? openTitles.includes(section.title) : index === 0) ? ' open' : ''}><summary><span class="rule-number">${pad(index + 1)}</span>${esc(section.title)}</summary><div class="rule-body">${renderMarkdown(section.body)}</div></details>`).join('') || '<p class="loading-message">Правила скоро появятся.</p>';
+  $('#rules-content').setAttribute('aria-busy', 'false');
+}
+
+const loaders = {
+  scores: { path: 'data/scores.txt', parse: parseScores, render: () => { renderStageFilters(); renderMatches(); renderPodium(); }, target: '#match-board', label: 'матчи' },
+  players: { path: 'data/players.txt', parse: parsePlayers, render: renderPlayers, target: '#players-list', label: 'участников' },
+  rules: { path: 'data/rules.md', parse: parseRules, render: () => { renderRules(); renderPodium(); }, target: '#rules-content', label: 'правила' },
+};
+
+async function loadData() {
+  if (state.loading) return;
+  state.loading = true;
+  document.querySelectorAll('[data-retry]').forEach(button => { button.disabled = true; });
+  try {
+    await Promise.allSettled(Object.entries(loaders).map(async ([key, loader]) => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+      try {
+        const response = await fetch(new URL(loader.path, document.baseURI), { cache: 'no-store', signal: controller.signal });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        // A hosting fallback can return index.html with HTTP 200 for missing data.
+        if (/^\s*<(?:!doctype\s+html|html)[\s>]/i.test(text)) throw new Error('Unexpected HTML');
+        const recovered = failures.delete(key);
+        if (previous.get(key) !== text || recovered) {
+          state[key] = loader.parse(text);
+          previous.set(key, text);
+          loader.render();
+        }
+      } catch (error) {
+        failures.add(key);
+        if (!state[key]) {
+          const target = $(loader.target);
+          target.innerHTML = `<div class="error-state" role="status">Не удалось загрузить ${loader.label}. Проверь подключение и попробуй ещё раз.<button type="button" class="retry-button" data-retry>Повторить загрузку</button></div>`;
+          target.setAttribute('aria-busy', 'false');
+          if (key === 'scores') {
+            $('#match-progress').textContent = 'Результаты временно недоступны';
+            $('#podium').innerHTML = '<p class="loading-message">Итоги появятся после загрузки результатов.</p>';
+          }
+        }
+        if (key === 'scores') renderScoresNotice();
+      } finally { clearTimeout(timeout); }
+    }));
+    const now = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date());
+    $('#update-status').textContent = failures.size ? 'Часть данных не обновилась · повторим через минуту' : `Обновлено в ${now} · проверяем раз в минуту`;
+  } finally {
+    state.loading = false;
+    document.querySelectorAll('[data-retry]').forEach(button => { button.disabled = false; });
+  }
+}
+
+function setStage(id) {
+  state.stage = id;
+  document.querySelectorAll('[data-stage]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.stage === id)));
+}
+
+function resetFilters() {
+  state.search = ''; state.status = 'all'; setStage('all');
+  $('#match-search').value = '';
+  $('#match-status').value = 'all';
+  renderMatches();
+}
+
+document.addEventListener('click', event => {
+  const stage = event.target.closest('[data-stage]');
+  const player = event.target.closest('[data-player]');
+  if (stage) { setStage(stage.dataset.stage); renderMatches(); }
+  if (player) {
+    resetFilters(); state.search = player.dataset.player;
+    $('#match-search').value = state.search;
+    renderMatches();
+    $('#matches').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    $('#match-search').focus({ preventScroll: true });
+  }
+  if (event.target.closest('[data-reset]')) { resetFilters(); $('#match-search').focus(); }
+  if (event.target.closest('[data-retry]')) loadData();
+});
+$('#match-search').addEventListener('input', event => { state.search = event.target.value; renderMatches(); });
+$('#match-status').addEventListener('change', event => { state.status = event.target.value; renderMatches(); });
+
+// Refresh only data that changed; filters and open rules survive periodic updates.
+setInterval(() => { if (!document.hidden) loadData(); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(); });
+loadData();

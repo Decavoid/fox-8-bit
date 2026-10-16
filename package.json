@@ -1,0 +1,11 @@
+{
+  "name": "fox-8-bit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ВосьмиБитва — турнир NES/Famicom от FoxyShadow",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test"
+  }
+}
