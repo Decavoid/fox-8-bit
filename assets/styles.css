@@ -79,7 +79,7 @@ h1>span{color:var(--hero-accent)}
 .event-stat strong{font-family:'Nihonium 113','Stat currency',var(--display);font-size:36px;font-weight:400;font-synthesis:none;line-height:1.1;letter-spacing:0}
 .event-stat>div>span{font-size:11px;color:var(--muted)}
 .stat-unit{font-weight:400;font-size:24px;letter-spacing:0}
-.stat-slash{font-weight:400;color:var(--text-subtle);font-size:28px;margin-inline:3px}
+.stat-slash{font-weight:400;color:inherit;font-size:28px;margin-inline:3px}
 .stat-trophy{margin-left:auto;margin-right:32px;color:#ff8d00;width:29px;height:29px}
 
 .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:31px}
