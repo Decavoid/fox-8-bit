@@ -176,8 +176,6 @@ async function loadData() {
         if (key === 'games') renderGamesNotice();
       } finally { clearTimeout(timeout); }
     }));
-    const now = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date());
-    $('#update-status').textContent = failures.size ? 'Часть данных не обновилась · повторим через минуту' : `Обновлено в ${now} · проверяем раз в минуту`;
   } finally {
     state.loading = false;
     document.querySelectorAll('[data-retry]').forEach(button => { button.disabled = false; });
