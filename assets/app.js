@@ -33,14 +33,25 @@ function groupCard(block, stage) {
   return `<article class="match-card group-card" aria-label="Группа из трёх игроков: ${esc(standings.standings.map(player => player.name).join(', '))}">
     <div class="match-card-top"><span class="group-label">ГРУППА ИЗ ТРЁХ</span><span>МАТЧИ ${pad(block.matches[0].number)}–${pad(block.matches.at(-1).number)}</span></div>
     <p class="group-hint">Каждый с каждым · ${isFinal ? 'борьба за пьедестал' : '2 игрока проходят дальше'}</p>
-    ${block.matches.map(match => {
-      const result = matchState(match);
-      return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
-        <span class="group-player${result.winner === 0 ? ' winner' : ''}">${esc(match.players[0])}</span>
-        <span class="group-score" aria-hidden="true"><span class="${result.winner === 0 ? 'win-score' : ''}">${match.scores[0] ?? '—'}</span><span class="score-separator">:</span><span class="${result.winner === 1 ? 'win-score' : ''}">${match.scores[1] ?? '—'}</span></span>
-        <span class="group-player${result.winner === 1 ? ' winner' : ''}">${esc(match.players[1])}</span>
-      </div>`;
-    }).join('')}
+    <div class="group-standings">
+      <div class="group-standings-heading">Победы</div>
+      ${standings.standings.map(player => `<div class="contestant${standings.winners.includes(player.name) ? ' winner' : ''}">
+        <span class="contestant-name">${esc(player.name)}</span>
+        ${standings.winners.includes(player.name) ? `<span class="sr-only">${isFinal ? 'Лидер группы.' : 'Проходит дальше.'}</span>` : ''}
+        <span class="score" aria-label="Побед в группе: ${player.wins}">${player.wins}</span>
+      </div>`).join('')}
+    </div>
+    <details class="group-games" data-group="${block.id}">
+      <summary>Личные встречи</summary>
+      ${block.matches.map(match => {
+        const result = matchState(match);
+        return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
+          <span class="group-player${result.winner === 0 ? ' winner' : ''}">${esc(match.players[0])}</span>
+          <span class="group-score" aria-hidden="true"><span class="${result.winner === 0 ? 'win-score' : ''}">${match.scores[0] ?? '—'}</span><span class="score-separator">:</span><span class="${result.winner === 1 ? 'win-score' : ''}">${match.scores[1] ?? '—'}</span></span>
+          <span class="group-player${result.winner === 1 ? ' winner' : ''}">${esc(match.players[1])}</span>
+        </div>`;
+      }).join('')}
+    </details>
     <div class="group-result${standings.replay ? ' needs-replay' : ''}">${note}</div>
   </article>`;
 }
@@ -55,6 +66,7 @@ function renderStageFilters() {
 function renderMatches() {
   if (!state.scores) return;
   const board = $('#match-board');
+  const openGroups = new Set([...board.querySelectorAll('.group-games[open]')].map(details => details.dataset.group));
   const matches = state.scores.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches));
   const completed = matches.filter(match => matchState(match).status === 'completed').length;
   $('#match-progress').innerHTML = `<span class="progress-track" aria-hidden="true"><span class="progress-fill" style="width:${matches.length ? completed / matches.length * 100 : 0}%"></span></span>${completed} / ${matches.length} ${plural(matches.length, ['матч сыгран', 'матча сыграно', 'матчей сыграно'])}`;
@@ -74,6 +86,9 @@ function renderMatches() {
   }).join('');
   board.classList.toggle('filtered-stage', state.stage !== 'all');
   board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус матча.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
+  board.querySelectorAll('.group-games').forEach(details => {
+    if (openGroups.has(details.dataset.group)) details.setAttribute('open', '');
+  });
   board.setAttribute('aria-busy', 'false');
   renderScoresNotice();
 }

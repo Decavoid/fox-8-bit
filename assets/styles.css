@@ -140,6 +140,13 @@ h1>span{display:block;color:var(--green)}
 .group-label{display:flex;gap:6px;align-items:center}
 .group-label::before{content:"";display:inline-block;width:7px;height:7px;background:var(--orange);box-shadow:3px -3px 0 #6a4b35}
 .group-hint{font-size:10px;color:#aa9f8e;margin-top:-5px;margin-bottom:15px}
+.group-standings-heading{text-align:right;font-size:10px;color:var(--muted);margin-bottom:6px}
+.group-games{margin-top:12px;border-top:1px solid #373a2e}
+.group-games summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;cursor:pointer;list-style:none;font-size:11px;color:#aa9f8e}
+.group-games summary::-webkit-details-marker{display:none}
+.group-games summary::after{content:"+";font-family:var(--mono);font-size:18px;line-height:1}
+.group-games[open] summary{color:var(--green)}
+.group-games[open] summary::after{content:"−"}
 .group-game{padding:10px 0;border-top:1px solid #373a2e;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;font-size:10px}
 .group-player{font-size:2em;overflow-wrap:anywhere;line-height:1.5;color:#a6ad9d}.group-player:last-child{text-align:right}
 .group-player.winner{color:var(--green)}
