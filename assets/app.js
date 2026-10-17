@@ -5,7 +5,7 @@ const state = { scores: null, gamesWon: null, players: null, games: null, rules:
 const gamesMobile = window.matchMedia('(max-width: 660px)');
 const previous = new Map();
 const failures = new Set();
-const expandedMatches = new Set();
+let shownGames = null;
 const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const pad = number => String(number).padStart(2, '0');
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
@@ -15,25 +15,32 @@ function statusLabel(status) {
 }
 
 function contestantRows(match, result) {
-  return match.players.map((player, index) => `<div class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
+  return match.players.map((player, index) => {
+    const score = match.scores[index];
+    const scoreLabel = score === null ? 'Счёт пока не указан' : `Очки: ${score}`;
+    const hasGames = state.gamesWon?.matches.get(match.matchId)?.get(player)?.length;
+    return `<div class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
       <span class="contestant-name">${esc(player)}</span>
       ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
-      <span class="score${match.scores[index] === null ? ' pending-score' : ''}" aria-label="${match.scores[index] === null ? 'Счёт пока не указан' : `Очки: ${match.scores[index]}`}">${match.scores[index] ?? '—'}</span>
-    </div>`).join('');
+      ${hasGames
+        ? `<button type="button" class="score score-button${score === null ? ' pending-score' : ''}" data-games-match="${esc(match.matchId)}" data-games-player="${esc(player)}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(player)}. ${scoreLabel}. Показать выигранные игры" title="Показать выигранные игры">${score ?? '—'}</button>`
+        : `<span class="score${score === null ? ' pending-score' : ''}" aria-label="${scoreLabel}">${score ?? '—'}</span>`}
+    </div>`;
+  }).join('');
 }
 
-function matchGames(match) {
-  const players = state.gamesWon?.matches.get(match.matchId);
-  if (!players || !match.players.some(player => players.has(player))) return '';
-  return `<details class="match-games" data-match-games="${esc(match.matchId)}"${expandedMatches.has(match.matchId) ? ' open' : ''}>
-    <summary>Выигранные игры<span class="sr-only">: ${esc(match.players.join(' — '))}</span></summary>
-    <div class="match-games-content">${match.players.map((player, index) => {
-      const games = players.get(player) || [];
-      return `<section class="match-games-player"><h4>${esc(player)}</h4>${games.length
-        ? `<ul>${games.map(game => `<li>${esc(game)}</li>`).join('')}</ul>`
-        : `<p class="match-games-empty">${match.scores[index] === 0 ? 'Нет побед в этом матче.' : 'Игры пока не указаны.'}</p>`}</section>`;
-    }).join('')}</div>
-  </details>`;
+function renderGamesDialog() {
+  if (!shownGames) return false;
+  const match = state.scores?.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches)).find(match => match.matchId === shownGames.matchId);
+  const games = state.gamesWon?.matches.get(shownGames.matchId)?.get(shownGames.player);
+  if (!match?.players.includes(shownGames.player) || !games?.length) {
+    $('#games-dialog').close();
+    return false;
+  }
+  $('#games-dialog-title').textContent = shownGames.player;
+  $('#games-dialog-match').textContent = `Матч ${match.number}: ${match.players[0]} ${match.scores[0] ?? '—'} : ${match.scores[1] ?? '—'} ${match.players[1]}`;
+  $('#games-dialog-content').innerHTML = `<ul>${games.map(game => `<li>${esc(game)}</li>`).join('')}</ul>`;
+  return true;
 }
 
 function singleCard(match) {
@@ -41,7 +48,6 @@ function singleCard(match) {
   return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
     ${result.status === 'completed' ? '' : `<div class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>`}
     ${contestantRows(match, result)}
-    ${matchGames(match)}
   </article>`;
 }
 
@@ -53,7 +59,6 @@ function groupCard(block) {
         const result = matchState(match);
         return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
           ${contestantRows(match, result)}
-          ${matchGames(match)}
         </div>`;
       }).join('')}
     </div>
@@ -71,10 +76,7 @@ function renderStageFilters() {
 function renderMatches() {
   if (!state.scores) return;
   const board = $('#match-board');
-  board.querySelectorAll('[data-match-games]').forEach(details => {
-    if (details.open) expandedMatches.add(details.dataset.matchGames);
-    else expandedMatches.delete(details.dataset.matchGames);
-  });
+  const focusedScore = document.activeElement?.closest('[data-games-match]');
   const stages = state.scores.stages.filter(stage => state.stage === 'all' || stage.id === state.stage);
   let anyMatches = false;
   const filtered = Boolean(state.search.trim()) || state.status !== 'all';
@@ -91,7 +93,12 @@ function renderMatches() {
   board.classList.toggle('filtered-stage', state.stage !== 'all');
   board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус матча.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
   board.setAttribute('aria-busy', 'false');
+  if (focusedScore) {
+    const replacement = [...board.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === focusedScore.dataset.gamesMatch && button.dataset.gamesPlayer === focusedScore.dataset.gamesPlayer);
+    (replacement || $('#match-search')).focus({ preventScroll: true });
+  }
   renderScoresNotice();
+  renderGamesDialog();
 }
 
 function renderScoresNotice() {
@@ -240,6 +247,12 @@ function resetFilters() {
 document.addEventListener('click', event => {
   const stage = event.target.closest('[data-stage]');
   const player = event.target.closest('[data-player]');
+  const games = event.target.closest('[data-games-match]');
+  if (games) {
+    shownGames = { matchId: games.dataset.gamesMatch, player: games.dataset.gamesPlayer };
+    if (renderGamesDialog()) $('#games-dialog').showModal();
+  }
+  if (event.target.closest('[data-close-games]')) $('#games-dialog').close();
   if (stage) { setStage(stage.dataset.stage); renderMatches(); }
   if (player) {
     resetFilters(); state.search = player.dataset.player;
@@ -251,6 +264,16 @@ document.addEventListener('click', event => {
   if (event.target.closest('[data-reset]')) { resetFilters(); $('#match-search').focus(); }
   if (event.target.closest('[data-reset-games]')) { state.gameSearch = ''; $('#game-search').value = ''; renderGames(); $('#game-search').focus(); }
   if (event.target.closest('[data-retry]')) loadData();
+});
+$('#games-dialog').addEventListener('click', event => {
+  if (event.target !== event.currentTarget) return;
+  const bounds = event.currentTarget.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) event.currentTarget.close();
+});
+$('#games-dialog').addEventListener('close', () => {
+  const trigger = [...document.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === shownGames?.matchId && button.dataset.gamesPlayer === shownGames?.player);
+  shownGames = null;
+  (trigger || $('#match-search')).focus({ preventScroll: true });
 });
 $('#match-search').addEventListener('input', event => { state.search = event.target.value; renderMatches(); });
 $('#game-search').addEventListener('input', event => { state.gameSearch = event.target.value; renderGames(); });

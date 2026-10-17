@@ -1,13 +1,6 @@
 # Header: MatchId | Player
 # Below each header: NES game names won by this player in a match MatchId from scores.txt
 
-A1 | Deeper
-The Addams Family
-
-A1 | neradimo
-Adventures in Magic Kingdom
-Balloon Fight
-
 A2 | odzman
 Batman
 Batman: Return of the Joker

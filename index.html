@@ -125,6 +125,13 @@
     <footer class="site-footer">
       <div class="container footer-inner"><a class="brand footer-brand" href="#"><img src="assets/favicon.png" width="28" height="28" alt=""><span>Восьми<span class="accent">Битва</span></span></a><p>Турнир от <a href="https://www.twitch.tv/foxyshadow" target="_blank" rel="noopener noreferrer">FoxyShadow</a>. Сделано с любовью к 8 битам.</p><a href="#" class="back-top">Наверх ↑</a></div>
     </footer>
+    <dialog id="games-dialog" class="games-dialog" aria-labelledby="games-dialog-title" aria-describedby="games-dialog-match">
+      <header class="games-dialog-header">
+        <div><p class="games-dialog-kicker">Выигранные игры</p><h2 id="games-dialog-title"></h2><p id="games-dialog-match" class="games-dialog-match"></p></div>
+        <button type="button" class="games-dialog-close" data-close-games aria-label="Закрыть список игр" autofocus>×</button>
+      </header>
+      <div id="games-dialog-content" class="games-dialog-content" tabindex="0" role="region" aria-label="Список выигранных игр"></div>
+    </dialog>
     <noscript><div class="noscript-notice">Для интерактивной сетки нужен JavaScript. Все данные доступны напрямую: <a href="data/scores.txt">результаты</a>, <a href="data/nes-games-won-by-player.txt">выигранные игры</a>, <a href="data/players.txt">участники</a>, <a href="data/games.txt">игры</a>, <a href="data/rules.md">правила</a>.</div></noscript>
   </body>
 </html>
