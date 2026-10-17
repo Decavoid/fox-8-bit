@@ -63,7 +63,7 @@ function renderMatches() {
     if (filtered && !blocks.length) return '';
     const count = blocks.reduce((total, block) => total + block.matches.length, 0);
     return `<section class="stage" aria-labelledby="${stage.id}-title">
-      <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
+      <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['игра', 'игры', 'игр'])}</span></header>
       <div class="stage-matches">${blocks.length ? blocks.map(block => block.type === 'group' ? groupCard(block) : singleCard(block.matches[0])).join('') : '<div class="stage-empty"><span class="empty-symbol" aria-hidden="true">[ ? ]</span>Соперники ещё не определены.<br>Здесь появятся следующие матчи.</div>'}</div>
     </section>`;
   }).join('');
