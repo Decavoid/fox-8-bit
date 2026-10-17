@@ -1,37 +1,37 @@
 ## Раунд 1
-Player 1       | Score | Player 2     | Score
+MatchId | Player 1       | Score | Player 2     | Score
 
-Deeper         | 1     | neradimo     | 2
+A1 | Deeper         | 1     | neradimo     | 2
 
-odzman         | 2     | Hanter       | 0
+A2 | odzman         | 2     | Hanter       | 0
 
-Lux Ferre      | 0     | Frank_Filter | 2
+A3 | Lux Ferre      | 0     | Frank_Filter | 2
 
-Serxio         | 2     | Billy        | 1
+A4 | Serxio         | 2     | Billy        | 1
 
-dilat          | 1     | Mr(A)ked     | 0
-dilat          | 1     | arcade_user  | 0
-Mr(A)ked       | 0     | arcade_user  | 1
+A5 | dilat          | 1     | Mr(A)ked     | 0
+A6 | dilat          | 1     | arcade_user  | 0
+A7 | Mr(A)ked       | 0     | arcade_user  | 1
 
 
 
 ## Полуфиналы
-Player 1       | Score | Player 2     | Score
+MatchId | Player 1       | Score | Player 2     | Score
 
-neradimo       | 3     | odzman       | 2
+B1 | neradimo       | 3     | odzman       | 2
 
-Frank_Filter   | 2     | Serxio       | 3
+B2 | Frank_Filter   | 2     | Serxio       | 3
 
-dilat          | 3     | arcade_user  | 0
+B3 | dilat          | 3     | arcade_user  | 0
 
 
 
 ## Финал
-Player 1       | Score | Player 2       | Score
+MatchId | Player 1       | Score | Player 2       | Score
 
-neradimo       | 5     | Serxio     | 0
-neradimo       | 4     | dilat      | 5
-Serxio         | 2     | dilat      | 5
+C1 | neradimo       | 5     | Serxio     | 0
+C2 | neradimo       | 4     | dilat      | 5
+C3 | Serxio         | 2     | dilat      | 5
 
 
 
