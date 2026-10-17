@@ -23,6 +23,44 @@ export function parseGames(text) {
   return parseLineList(text);
 }
 
+function isMatchId(value) {
+  return /^[a-z\d][a-z\d._-]*$/i.test(value);
+}
+
+/** Per-match game wins; a blank line closes the current player's section. */
+export function parseGamesWon(text) {
+  const matches = new Map();
+  const warnings = [];
+  let games = null;
+
+  text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach((raw, index) => {
+    const line = raw.trim();
+    if (!line) { games = null; return; }
+    if (line.startsWith('#')) return;
+    if (line.includes('|')) {
+      games = null;
+      const cells = line.split('|').map(cell => cell.trim());
+      if (cells.length === 2 && /^MatchId$/i.test(cells[0]) && /^Player$/i.test(cells[1])) return;
+      if (cells.length !== 2 || !isMatchId(cells[0]) || !cells[1]) {
+        warnings.push(`Строка ${index + 1}: не удалось прочитать заголовок списка выигранных игр (MatchId | Player).`);
+        return;
+      }
+      const [matchId, player] = cells;
+      if (!matches.has(matchId)) matches.set(matchId, new Map());
+      const players = matches.get(matchId);
+      if (!players.has(player)) players.set(player, []);
+      games = players.get(player);
+      return;
+    }
+    if (!games) {
+      warnings.push(`Строка ${index + 1}: игра «${line}» указана без заголовка MatchId | Player.`);
+      return;
+    }
+    games.push(line);
+  });
+  return { matches, warnings };
+}
+
 export function matchState(match) {
   const [first, second] = match.scores;
   if (first === null || second === null) return { status: 'pending', winner: null };
@@ -51,6 +89,7 @@ export function parseScores(text) {
   let block = [];
   let winnersSection = false;
   let matchNumber = 0;
+  const matchIds = new Map();
 
   function flush() {
     if (!block.length) return;
@@ -90,7 +129,7 @@ export function parseScores(text) {
     const row = line.startsWith('|') ? line.slice(1).replace(/\|$/, '') : line;
     const cells = row.split('|').map(cell => cell.trim());
     // Headers and optional Markdown table separators are not match boundaries.
-    if (/^(?:Player\s*1|Игрок\s*1|Place|Место)$/iu.test(cells[0])) return;
+    if (/^(?:MatchId|Player\s*1|Игрок\s*1|Place|Место)$/iu.test(cells[0])) return;
     if (cells.every(cell => /^:?-{2,}:?$/.test(cell))) return;
     if (winnersSection) {
       if (cells.length !== 2 || !/^[1-3]$/.test(cells[0])) {
@@ -103,7 +142,9 @@ export function parseScores(text) {
       }
       return;
     }
-    if (cells.length !== 4 || !cells[0] || !cells[2] || cells[0] === cells[2]) {
+    const hasMatchId = cells.length === 5;
+    const values = hasMatchId ? cells.slice(1) : cells;
+    if (values.length !== 4 || !values[0] || !values[2] || values[0] === values[2]) {
       flush();
       warnings.push(`Строка ${index + 1}: не удалось прочитать матч.`);
       return;
@@ -113,7 +154,21 @@ export function parseScores(text) {
       stages.push(stage);
     }
     matchNumber++;
-    block.push({ id: `match-${matchNumber}`, number: matchNumber, players: [cells[0], cells[2]], scores: [scoreValue(cells[1], index + 1), scoreValue(cells[3], index + 1)] });
+    const match = { id: `match-${matchNumber}`, number: matchNumber, matchId: null, players: [values[0], values[2]], scores: [scoreValue(values[1], index + 1), scoreValue(values[3], index + 1)] };
+    if (hasMatchId) {
+      const matchId = cells[0];
+      if (!isMatchId(matchId)) {
+        warnings.push(`Строка ${index + 1}: некорректный MatchId «${matchId}». Список выигранных игр для этого матча недоступен.`);
+      } else if (matchIds.has(matchId)) {
+        // Neither occurrence can safely own game wins from the external file.
+        matchIds.get(matchId).matchId = null;
+        warnings.push(`Строка ${index + 1}: повторный MatchId «${matchId}». Списки выигранных игр для матчей с этим идентификатором недоступны.`);
+      } else {
+        match.matchId = matchId;
+        matchIds.set(matchId, match);
+      }
+    }
+    block.push(match);
   });
   flush();
   return { stages, winners: winners.sort((a, b) => a.place - b.place), warnings };

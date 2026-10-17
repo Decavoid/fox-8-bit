@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { parseScores, parsePlayers, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown, inlineMarkdown, plural } from '../assets/tournament.js';
+import { parseScores, parsePlayers, parseGamesWon, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown, inlineMarkdown, plural } from '../assets/tournament.js';
 
 const source = file => readFile(new URL(file, import.meta.url), 'utf8');
 
@@ -52,6 +52,75 @@ test('BOM, CRLF, surrounding spaces and optional Markdown table pipes are suppor
   const data = parseScores('\uFEFF## Раунд 1\r\n| Player 1 | Score | Player 2 | Score |\r\n| --- | --- | --- | --- |\r\n\r\n| A | 2 | B | 0 |\r\n\r\n| C | | D | |\r\n');
   assert.equal(data.stages[0].blocks.length, 2);
   assert.deepEqual(data.stages[0].blocks[1].matches[0].scores, [null, null]);
+  assert.deepEqual(data.warnings, []);
+});
+
+test('explicit match IDs preserve match numbering, group detection and Markdown tables', () => {
+  const data = parseScores('\uFEFF## Раунд 1\r\n| MatchId | Player 1 | Score | Player 2 | Score |\r\n| --- | --- | --- | --- | --- |\r\n\r\n| A1 | A | 2 | B | 0 |\r\n| A2 | B | 2 | C | 0 |\r\n| A3 | C | 2 | A | 1 |\r\n\r\n| B-1.2_test | A | | D | |');
+  const matches = data.stages[0].blocks.flatMap(block => block.matches);
+  assert.deepEqual(data.stages[0].blocks.map(block => block.type), ['group', 'single']);
+  assert.deepEqual(matches.map(match => [match.id, match.number, match.matchId]), [
+    ['match-1', 1, 'A1'], ['match-2', 2, 'A2'], ['match-3', 3, 'A3'], ['match-4', 4, 'B-1.2_test'],
+  ]);
+  assert.deepEqual(matches[0].players, ['A', 'B']);
+  assert.deepEqual(matches[0].scores, [2, 0]);
+  assert.deepEqual(matches[3].scores, [null, null]);
+  assert.deepEqual(data.warnings, []);
+});
+
+test('legacy scores never infer source IDs from display match numbers', () => {
+  const data = parseScores('A | 2 | B | 1\n\nA2 | A | 0 | C | 1');
+  const matches = data.stages[0].blocks.flatMap(block => block.matches);
+  assert.deepEqual(matches.map(match => match.matchId), [null, 'A2']);
+  assert.deepEqual(matches.map(match => match.scores), [[2, 1], [0, 1]]);
+  assert.deepEqual(data.warnings, []);
+});
+
+test('duplicate and invalid source IDs cannot associate game wins to the wrong match', () => {
+  const data = parseScores('## Раунд 1\nA1 | A | 2 | B | 1\n\nA 2 | C | 0 | D | 2\n\n## Раунд 2\nA1 | A | 1 | C | 0\n\nA1 | B | 0 | D | 1\n\nA2 | B | 1 | C | 0');
+  const matches = data.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches));
+  assert.deepEqual(matches.map(match => match.matchId), [null, null, null, null, 'A2']);
+  assert.deepEqual(matches.map(match => match.scores), [[2, 1], [0, 2], [1, 0], [0, 1], [1, 0]]);
+  assert.equal(data.warnings.length, 3);
+  assert.match(data.warnings[0], /некорректный MatchId/);
+  assert.match(data.warnings[1], /повторный MatchId/);
+});
+
+test('game wins link by exact match ID and player, including different matches for one player', () => {
+  const scores = parseScores('A1 | A | 2 | B | 0\n\nA2 | A | 1 | C | 1');
+  const wins = parseGamesWon('\uFEFF# MatchId | Player\r\n\r\n A1 | A \r\n Batman \r\n# This comment does not end the section.\r\nBattle City\r\n\r\nA1 | B\r\n\r\nA2 | A\r\nDuck Tales\r\n\r\nA2 | C\r\nMega Man\r\n');
+  const matches = scores.stages[0].blocks.flatMap(block => block.matches);
+  assert.deepEqual(matches.map(match => match.players.map(player => wins.matches.get(match.matchId)?.get(player))), [
+    [['Batman', 'Battle City'], []], [['Duck Tales'], ['Mega Man']],
+  ]);
+  assert.equal(wins.matches.get('a1'), undefined);
+  assert.equal(wins.matches.get('A1').get('a'), undefined);
+  assert.deepEqual(wins.warnings, []);
+});
+
+test('repeated game-win sections merge and preserve intentional repeated titles', () => {
+  const data = parseGamesWon('A1 | A\nBatman\n\nA1 | B\nBattle City\nA1 | A\nBatman\nDuck Tales\n\nA1 | A\n');
+  assert.deepEqual([...data.matches.get('A1')], [
+    ['A', ['Batman', 'Batman', 'Duck Tales']], ['B', ['Battle City']],
+  ]);
+  assert.deepEqual(data.warnings, []);
+});
+
+test('blank lines and malformed game-win headers isolate subsequent game names', () => {
+  const data = parseGamesWon('Orphan title\nA1 | A\nBatman\n\nAfter blank\nA2 | B\nDuck Tales\nA3 |\nAfter empty player\nA 4 | C\nAfter invalid ID\nA5 | D | Extra\nAfter extra column\nA6 | E\nMega Man');
+  assert.deepEqual([...data.matches.keys()], ['A1', 'A2', 'A6']);
+  assert.deepEqual(data.matches.get('A1').get('A'), ['Batman']);
+  assert.deepEqual(data.matches.get('A2').get('B'), ['Duck Tales']);
+  assert.deepEqual(data.matches.get('A6').get('E'), ['Mega Man']);
+  assert.equal(data.warnings.length, 8);
+});
+
+test('empty game-win data and empty player sections are valid', () => {
+  for (const text of ['', '\uFEFF\r\n # comment\r\n', 'MatchId | Player\n']) {
+    assert.deepEqual(parseGamesWon(text), { matches: new Map(), warnings: [] });
+  }
+  const data = parseGamesWon('A1 | A\n\nA1 | B\n');
+  assert.deepEqual([...data.matches.get('A1')], [['A', []], ['B', []]]);
   assert.deepEqual(data.warnings, []);
 });
 
@@ -128,6 +197,17 @@ test('players are trimmed and deduplicated without changing nickname punctuation
 test('published scores use a valid format; future content edits need no test changes', async () => {
   const data = parseScores(await source('../data/scores.txt'));
   assert.deepEqual(data.warnings, []);
+});
+
+test('published game wins identify actual matches and their participants', async () => {
+  const scores = parseScores(await source('../data/scores.txt'));
+  const wins = parseGamesWon(await source('../data/nes-games-won-by-player.txt'));
+  const matches = new Map(scores.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches)).filter(match => match.matchId !== null).map(match => [match.matchId, match]));
+  assert.deepEqual(wins.warnings, []);
+  for (const [matchId, players] of wins.matches) {
+    assert.ok(matches.has(matchId), `Unknown match ${matchId}`);
+    for (const player of players.keys()) assert.ok(matches.get(matchId).players.includes(player), `Player ${player} is not in match ${matchId}`);
+  }
 });
 
 test('Russian noun forms for counts', () => {

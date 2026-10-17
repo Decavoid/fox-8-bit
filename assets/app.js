@@ -1,10 +1,11 @@
-import { escapeHtml as esc, plural, parsePlayers, parseGames, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
+import { escapeHtml as esc, plural, parsePlayers, parseGames, parseGamesWon, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
 
 const $ = selector => document.querySelector(selector);
-const state = { scores: null, players: null, games: null, rules: null, stage: 'all', search: '', gameSearch: '', gamesExpanded: false, status: 'all', loading: false };
+const state = { scores: null, gamesWon: null, players: null, games: null, rules: null, stage: 'all', search: '', gameSearch: '', gamesExpanded: false, status: 'all', loading: false };
 const gamesMobile = window.matchMedia('(max-width: 660px)');
 const previous = new Map();
 const failures = new Set();
+const expandedMatches = new Set();
 const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const pad = number => String(number).padStart(2, '0');
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
@@ -21,11 +22,26 @@ function contestantRows(match, result) {
     </div>`).join('');
 }
 
+function matchGames(match) {
+  const players = state.gamesWon?.matches.get(match.matchId);
+  if (!players || !match.players.some(player => players.has(player))) return '';
+  return `<details class="match-games" data-match-games="${esc(match.matchId)}"${expandedMatches.has(match.matchId) ? ' open' : ''}>
+    <summary>Выигранные игры<span class="sr-only">: ${esc(match.players.join(' — '))}</span></summary>
+    <div class="match-games-content">${match.players.map((player, index) => {
+      const games = players.get(player) || [];
+      return `<section class="match-games-player"><h4>${esc(player)}</h4>${games.length
+        ? `<ul>${games.map(game => `<li>${esc(game)}</li>`).join('')}</ul>`
+        : `<p class="match-games-empty">${match.scores[index] === 0 ? 'Нет побед в этом матче.' : 'Игры пока не указаны.'}</p>`}</section>`;
+    }).join('')}</div>
+  </details>`;
+}
+
 function singleCard(match) {
   const result = matchState(match);
   return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
     ${result.status === 'completed' ? '' : `<div class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>`}
     ${contestantRows(match, result)}
+    ${matchGames(match)}
   </article>`;
 }
 
@@ -37,6 +53,7 @@ function groupCard(block) {
         const result = matchState(match);
         return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
           ${contestantRows(match, result)}
+          ${matchGames(match)}
         </div>`;
       }).join('')}
     </div>
@@ -54,6 +71,10 @@ function renderStageFilters() {
 function renderMatches() {
   if (!state.scores) return;
   const board = $('#match-board');
+  board.querySelectorAll('[data-match-games]').forEach(details => {
+    if (details.open) expandedMatches.add(details.dataset.matchGames);
+    else expandedMatches.delete(details.dataset.matchGames);
+  });
   const stages = state.scores.stages.filter(stage => state.stage === 'all' || stage.id === state.stage);
   let anyMatches = false;
   const filtered = Boolean(state.search.trim()) || state.status !== 'all';
@@ -81,6 +102,17 @@ function renderScoresNotice() {
   } else if (state.scores?.warnings.length) {
     notice.hidden = false;
     notice.textContent = `Некоторые записи требуют проверки. ${state.scores.warnings.join(' ')}`;
+  } else notice.hidden = true;
+}
+
+function renderGamesWonNotice() {
+  const notice = $('#games-won-notice');
+  if (failures.has('gamesWon')) {
+    notice.hidden = false;
+    notice.innerHTML = `Не удалось ${state.gamesWon ? 'обновить' : 'загрузить'} выигранные игры.${state.gamesWon ? ' Показаны последние загруженные списки.' : ' Счёт матчей доступен отдельно.'} <button type="button" class="retry-button" data-retry>Повторить загрузку</button>`;
+  } else if (state.gamesWon?.warnings.length) {
+    notice.hidden = false;
+    notice.textContent = `Некоторые списки выигранных игр требуют проверки. ${state.gamesWon.warnings.join(' ')}`;
   } else notice.hidden = true;
 }
 
@@ -142,10 +174,12 @@ function renderRules() {
 
 const loaders = {
   scores: { path: 'data/scores.txt', parse: parseScores, render: () => { renderStageFilters(); renderMatches(); renderPodium(); }, target: '#match-board', label: 'матчи' },
+  gamesWon: { path: 'data/nes-games-won-by-player.txt', parse: parseGamesWon, render: () => { renderMatches(); renderGamesWonNotice(); } },
   players: { path: 'data/players.txt', parse: parsePlayers, render: renderPlayers, target: '#players-list', label: 'участников' },
   games: { path: 'data/games.txt', parse: parseGames, render: renderGames, target: '#games-list', label: 'список игр' },
   rules: { path: 'data/rules.md', parse: parseRules, render: () => { renderRules(); renderPodium(); }, target: '#rules-content', label: 'правила' },
 };
+const liveDataKeys = ['scores', 'gamesWon'];
 
 async function loadData(keys = Object.keys(loaders)) {
   if (state.loading) return;
@@ -153,7 +187,7 @@ async function loadData(keys = Object.keys(loaders)) {
   document.querySelectorAll('[data-retry]').forEach(button => { button.disabled = true; });
   try {
     await Promise.allSettled(keys.map(async key => {
-      if (key !== 'scores' && previous.has(key)) return;
+      if (!liveDataKeys.includes(key) && previous.has(key)) return;
       const loader = loaders[key];
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 12000);
@@ -171,7 +205,7 @@ async function loadData(keys = Object.keys(loaders)) {
         }
       } catch (error) {
         failures.add(key);
-        if (!state[key]) {
+        if (!state[key] && loader.target) {
           const target = $(loader.target);
           target.innerHTML = `<div class="error-state" role="status">Не удалось загрузить ${loader.label}. Проверь подключение и попробуй ещё раз.<button type="button" class="retry-button" data-retry>Повторить загрузку</button></div>`;
           target.setAttribute('aria-busy', 'false');
@@ -181,6 +215,7 @@ async function loadData(keys = Object.keys(loaders)) {
           if (key === 'games') $('#games-result').textContent = 'Список временно недоступен';
         }
         if (key === 'scores') renderScoresNotice();
+        if (key === 'gamesWon') renderGamesWonNotice();
         if (key === 'games') renderGamesNotice();
       } finally { clearTimeout(timeout); }
     }));
@@ -228,7 +263,7 @@ $('#games-toggle').addEventListener('click', () => {
 gamesMobile.addEventListener('change', renderGames);
 $('#match-status').addEventListener('change', event => { state.status = event.target.value; renderMatches(); });
 
-// Only scores refresh automatically; the other files load once, with manual retry on failure.
-setInterval(() => { if (!document.hidden) loadData(['scores']); }, 60000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(['scores']); });
+// Match results refresh automatically; the other files load once, with manual retry on failure.
+setInterval(() => { if (!document.hidden) loadData(liveDataKeys); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(liveDataKeys); });
 loadData();

@@ -117,6 +117,19 @@ h1>span{color:var(--accent)}
 .group-game{padding:var(--card-padding)}
 .group-game+.group-game{border-top:1px solid var(--match-border)}
 .group-replay{margin:0;padding:0 var(--card-padding) var(--card-padding);font-size:11px;color:var(--orange)}
+.match-games{margin-top:10px;border-top:1px solid var(--match-border)}
+.match-games summary{display:flex;align-items:center;gap:10px;min-height:38px;padding:6px 2px;cursor:pointer;list-style:none;color:var(--text-soft);font-family:var(--pixel);font-size:20px;font-weight:400;font-synthesis:none;line-height:1.2}
+.match-games summary::-webkit-details-marker{display:none}
+.match-games summary::after{content:"+";margin-left:auto;color:var(--accent);font-family:var(--mono);font-size:18px;line-height:1}
+.match-games[open] summary::after{content:"−"}
+.match-games summary:hover,.match-games[open] summary{color:var(--accent)}
+.match-games-content{display:grid;gap:16px;border-top:1px solid var(--match-border);padding:12px 2px 4px}
+.match-games-player{min-width:0}
+.match-games-player h4{margin:0 0 6px;color:var(--match-accent);font-family:var(--pixel);font-size:24px;font-weight:400;font-synthesis:none;line-height:1.2;overflow-wrap:anywhere}
+.match-games-player ul{margin:0;padding-left:18px;list-style-type:square;color:var(--text-soft);font-family:var(--pixel);font-size:18px;font-weight:400;font-synthesis:none;line-height:1.5;overflow-wrap:anywhere}
+.match-games-player li+li{margin-top:4px}
+.match-games-player li::marker{color:var(--accent-border)}
+.match-games-empty{font-size:12px;color:var(--muted)}
 .stage-empty{border:1px dashed var(--line);padding:35px 20px;text-align:center;color:var(--muted);font-size:12px;line-height:1.9;background:var(--panel-deep)}
 .stage-empty .empty-symbol{display:block;font-family:var(--mono);font-size:23px;color:var(--text-subtle);margin-bottom:9px}
 .empty-state{grid-column:1/-1;padding:46px 24px;text-align:center;border:1px dashed var(--line);color:var(--muted)}
