@@ -147,12 +147,14 @@ const loaders = {
   rules: { path: 'data/rules.md', parse: parseRules, render: () => { renderRules(); renderPodium(); }, target: '#rules-content', label: 'правила' },
 };
 
-async function loadData() {
+async function loadData(keys = Object.keys(loaders)) {
   if (state.loading) return;
   state.loading = true;
   document.querySelectorAll('[data-retry]').forEach(button => { button.disabled = true; });
   try {
-    await Promise.allSettled(Object.entries(loaders).map(async ([key, loader]) => {
+    await Promise.allSettled(keys.map(async key => {
+      if (key !== 'scores' && previous.has(key)) return;
+      const loader = loaders[key];
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 12000);
       try {
@@ -226,7 +228,7 @@ $('#games-toggle').addEventListener('click', () => {
 gamesMobile.addEventListener('change', renderGames);
 $('#match-status').addEventListener('change', event => { state.status = event.target.value; renderMatches(); });
 
-// Refresh only data that changed; filters and open rules survive periodic updates.
-setInterval(() => { if (!document.hidden) loadData(); }, 60000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(); });
+// Only scores refresh automatically; the other files load once, with manual retry on failure.
+setInterval(() => { if (!document.hidden) loadData(['scores']); }, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(['scores']); });
 loadData();
