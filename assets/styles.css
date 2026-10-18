@@ -88,7 +88,7 @@ h1>span{color:var(--accent)}
 .filter-button{border:1px solid transparent;padding:8px 12px;background:transparent;color:var(--muted);min-height:40px;white-space:nowrap}
 .filter-button:hover{color:var(--ink);background:var(--panel)}
 .filter-button[aria-pressed=true]{background:var(--accent-dim);border-color:var(--accent-border);color:var(--accent)}
-.match-tools{display:flex;gap:9px;align-items:center}
+.match-tools{display:flex;gap:9px;align-items:stretch}
 .search-field{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:7px 10px;min-height:37px;background:var(--panel-deep)}
 .search-field .icon{width:15px;height:15px;color:var(--text-subtle)}
 .search-field input{width:115px;min-width:0;border:0;background:transparent;color:var(--ink);padding:0;font-size:18px;outline-offset:6px}
@@ -96,8 +96,8 @@ h1>span{color:var(--accent)}
 #match-search{width:144px}
 .match-tools .search-field{min-height:40px}
 /* The in-page popup uses the same downloadable pixel font as its trigger. */
-#match-status,.status-select-trigger{appearance:none;background:var(--panel-deep) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%23c9b89f' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--text-soft);border:1px solid var(--line);height:40px;min-height:40px;padding:7px 28px 7px 10px;max-width:170px;cursor:pointer}
-.status-select{position:relative;width:170px;flex-shrink:0}
+#match-status,.status-select-trigger{appearance:none;background:var(--panel-deep) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%23c9b89f' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--text-soft);border:1px solid var(--line);height:auto;min-height:40px;padding:7px 28px 7px 10px;max-width:170px;cursor:pointer}
+.status-select{display:flex;position:relative;width:170px;flex-shrink:0}
 .status-select-trigger{width:100%;text-align:left;white-space:nowrap}
 .status-select-trigger[aria-expanded=true]{border-color:var(--accent-border)}
 .status-select-options{position:absolute;z-index:20;top:calc(100% + 4px);right:0;min-width:100%;width:max-content;margin:0;padding:4px;list-style:none;border:1px solid var(--accent-border);background:var(--panel-deep);color:var(--text-soft);box-shadow:0 8px 20px #0006}
