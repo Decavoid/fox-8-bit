@@ -115,7 +115,8 @@ export function parseScores(text) {
   text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach((raw, index) => {
     const line = raw.trim();
     if (!line) { flush(); return; }
-    const heading = line.match(/^#{1,6}\s+(.+?)\s*#*$/);
+    if (/^#(?!#)/.test(line)) return;
+    const heading = line.match(/^#{2,6}\s+(.+?)\s*#*$/);
     if (heading) {
       flush();
       const title = plainMarkdown(heading[1]);
