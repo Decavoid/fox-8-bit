@@ -170,6 +170,7 @@ h1>span{color:var(--accent)}
 .podium-ordinal{position:absolute;left:calc(100% + 1px);top:0;font-family:var(--font);font-size:12px;font-weight:400;line-height:1}
 @media(min-width:661px) and (max-width:1150px){.podium .podium-card{column-gap:18px}}
 .podium-card[data-place="1"] .podium-place{font-size:88px;width:auto}
+.podium-card[data-place="1"] .podium-ordinal{top:8px;font-size:16px}
 .podium-info{min-width:0;margin-left:12px}.podium-name{font-size:34px;font-weight:600;overflow-wrap:anywhere;line-height:1.4}.podium-money{font-family:'Nihonium 113','Stat currency',var(--display);font-size:24px;font-weight:400;font-synthesis:none;line-height:1;margin-top:5px;white-space:nowrap}
 .podium-name:not(.unannounced){color:#fff}
 .podium-money{color:var(--podium-color)}
