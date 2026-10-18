@@ -18,37 +18,48 @@ function contestantRows(match, result) {
   return match.players.map((player, index) => {
     const score = match.scores[index];
     const scoreLabel = score === null ? 'Счёт пока не указан' : `Очки: ${score}`;
-    const hasGames = state.gamesWon?.matches.get(match.matchId)?.get(player)?.length;
-    return `<div class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
+    return `<span class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
       <span class="contestant-name">${esc(player)}</span>
       ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
-      ${hasGames
-        ? `<button type="button" class="score score-button${score === null ? ' pending-score' : ''}" data-games-match="${esc(match.matchId)}" data-games-player="${esc(player)}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(player)}. ${scoreLabel}. Показать выигранные игры" title="Показать выигранные игры">${score ?? '—'}</button>`
-        : `<span class="score${score === null ? ' pending-score' : ''}" aria-label="${scoreLabel}">${score ?? '—'}</span>`}
-    </div>`;
+      <span class="score${score === null ? ' pending-score' : ''}" aria-label="${scoreLabel}">${score ?? '—'}</span>
+    </span>`;
   }).join('');
 }
 
+const matchKey = match => match.matchId ? `source:${match.matchId}` : `row:${match.id}`;
+const findMatch = key => state.scores?.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches)).find(match => matchKey(match) === key);
+const matchDescription = match => `Матч ${match.number}: ${match.players[0]} ${match.scores[0] ?? '—'} : ${match.scores[1] ?? '—'} ${match.players[1]}`;
+
 function renderGamesDialog() {
   if (!shownGames) return false;
-  const match = state.scores?.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches)).find(match => match.matchId === shownGames.matchId);
-  const games = state.gamesWon?.matches.get(shownGames.matchId)?.get(shownGames.player);
-  if (!match?.players.includes(shownGames.player) || !games?.length) {
+  const match = findMatch(shownGames.key);
+  // Legacy rows have no stable source ID; do not switch an open result to a different pair.
+  if (!match || (!match.matchId && JSON.stringify(match.players) !== JSON.stringify(shownGames.players))) {
     $('#games-dialog').close();
     return false;
   }
-  $('#games-dialog-title').textContent = shownGames.player;
-  $('#games-dialog-match').textContent = `Матч ${match.number}: ${match.players[0]} ${match.scores[0] ?? '—'} : ${match.scores[1] ?? '—'} ${match.players[1]}`;
-  $('#games-dialog-content').innerHTML = `<ul>${games.map(game => `<li>${esc(game)}</li>`).join('')}</ul>`;
+  const result = matchState(match);
+  const order = result.winner === 1 ? [1, 0] : [0, 1];
+  const outcome = index => result.winner === null ? '' : result.winner === index ? ' winner' : ' loser';
+  const playerName = index => `<span class="games-dialog-player${outcome(index)}">${esc(match.players[index])}</span>`;
+  $('#games-dialog-match').textContent = `${matchDescription(match)}. ${statusLabel(result.status)}${result.winner === null ? '' : `. Победитель: ${match.players[result.winner]}`}`;
+  $('#games-dialog-scoreboard').innerHTML = `${playerName(order[0])}<div class="games-dialog-scores">${order.map(index => `<span class="games-dialog-result${outcome(index)}"><span class="score${match.scores[index] === null ? ' pending-score' : ''}" aria-label="${esc(match.players[index])}: ${match.scores[index] ?? 'счёт пока не указан'}">${match.scores[index] ?? '—'}</span></span>`).join('')}</div>${playerName(order[1])}`;
+  $('#games-dialog-content').innerHTML = order.map(index => {
+    const player = match.players[index];
+    const games = state.gamesWon?.matches.get(match.matchId)?.get(player) || [];
+    return `<section class="games-dialog-games${outcome(index)}" aria-label="Выигранные игры: ${esc(player)}">${games.length
+      ? `<ul>${games.map(game => `<li>${esc(game)}</li>`).join('')}</ul>`
+      : `<p class="games-dialog-empty">${match.scores[index] === 0 ? 'Нет побед в этом матче.' : 'Игры пока не указаны.'}</p>`}</section>`;
+  }).join('');
   return true;
 }
 
 function singleCard(match) {
   const result = matchState(match);
-  return `<article class="match-card" aria-label="Матч ${match.number}: ${esc(match.players.join(' — '))}">
-    ${result.status === 'completed' ? '' : `<div class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></div>`}
+  return `<button type="button" class="match-card match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. Открыть результат игры">
+    ${result.status === 'completed' ? '' : `<span class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></span>`}
     ${contestantRows(match, result)}
-  </article>`;
+  </button>`;
 }
 
 function groupCard(block) {
@@ -57,9 +68,9 @@ function groupCard(block) {
     <div class="group-games">
       ${block.matches.map(match => {
         const result = matchState(match);
-        return `<div class="group-game" aria-label="Матч ${match.number}. ${esc(match.players[0])}: ${match.scores[0] ?? 'счёт не указан'}, ${esc(match.players[1])}: ${match.scores[1] ?? 'счёт не указан'}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}">
+        return `<button type="button" class="group-game match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат игры">
           ${contestantRows(match, result)}
-        </div>`;
+        </button>`;
       }).join('')}
     </div>
     ${standings.replay ? '<p class="group-replay">У всех по одной победе — требуется переигровка группы.</p>' : ''}
@@ -76,7 +87,7 @@ function renderStageFilters() {
 function renderMatches() {
   if (!state.scores) return;
   const board = $('#match-board');
-  const focusedScore = document.activeElement?.closest('[data-games-match]');
+  const focusedMatch = document.activeElement?.closest('[data-games-match]');
   const stages = state.scores.stages.filter(stage => state.stage === 'all' || stage.id === state.stage);
   let anyMatches = false;
   const filtered = Boolean(state.search.trim()) || state.status !== 'all';
@@ -93,8 +104,8 @@ function renderMatches() {
   board.classList.toggle('filtered-stage', state.stage !== 'all');
   board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус матча.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
   board.setAttribute('aria-busy', 'false');
-  if (focusedScore) {
-    const replacement = [...board.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === focusedScore.dataset.gamesMatch && button.dataset.gamesPlayer === focusedScore.dataset.gamesPlayer);
+  if (focusedMatch) {
+    const replacement = [...board.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === focusedMatch.dataset.gamesMatch);
     (replacement || $('#match-search')).focus({ preventScroll: true });
   }
   renderScoresNotice();
@@ -249,8 +260,11 @@ document.addEventListener('click', event => {
   const player = event.target.closest('[data-player]');
   const games = event.target.closest('[data-games-match]');
   if (games) {
-    shownGames = { matchId: games.dataset.gamesMatch, player: games.dataset.gamesPlayer };
-    if (renderGamesDialog()) $('#games-dialog').showModal();
+    const match = findMatch(games.dataset.gamesMatch);
+    if (match) {
+      shownGames = { key: games.dataset.gamesMatch, players: match.players };
+      if (renderGamesDialog()) $('#games-dialog').showModal();
+    }
   }
   if (event.target.closest('[data-close-games]')) $('#games-dialog').close();
   if (stage) { setStage(stage.dataset.stage); renderMatches(); }
@@ -271,7 +285,7 @@ $('#games-dialog').addEventListener('click', event => {
   if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) event.currentTarget.close();
 });
 $('#games-dialog').addEventListener('close', () => {
-  const trigger = [...document.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === shownGames?.matchId && button.dataset.gamesPlayer === shownGames?.player);
+  const trigger = [...document.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === shownGames?.key);
   shownGames = null;
   (trigger || $('#match-search')).focus({ preventScroll: true });
 });
