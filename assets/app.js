@@ -1,6 +1,8 @@
 import { escapeHtml as esc, plural, parsePlayers, parseGames, parseGamesWon, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
+import { enhanceStatusSelect } from './status-select.js';
 
 const $ = selector => document.querySelector(selector);
+const statusSelect = enhanceStatusSelect($('#match-status'));
 const state = { scores: null, gamesWon: null, players: null, games: null, rules: null, stage: 'all', search: '', gameSearch: '', gamesExpanded: false, status: 'all', loading: false };
 const gamesMobile = window.matchMedia('(max-width: 660px)');
 const previous = new Map();
@@ -252,6 +254,7 @@ function resetFilters() {
   state.search = ''; state.status = 'all'; setStage('all');
   $('#match-search').value = '';
   $('#match-status').value = 'all';
+  statusSelect.sync();
   renderMatches();
 }
 
