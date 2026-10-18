@@ -147,22 +147,22 @@ h1>span{color:var(--accent)}
 .awards-section{padding-block:16px 24px;border-top:1px solid var(--accent-border);border-bottom:1px solid var(--accent-border)}
 .awards-caption{font-size:11px;color:var(--muted);margin-bottom:3px}
 .podium{display:grid;grid-template-columns:1fr 1.18fr 1fr;gap:18px;align-items:end}
-.podium-card{position:relative;background:var(--panel-deep);border:1px solid var(--line);padding:25px 24px;min-width:0;display:flex;align-items:center;gap:19px;min-height:111px}
-.podium-card[data-place="1"]{--podium-color:#ffd700;order:2;border-color:var(--match-winner);background:var(--accent-dim);min-height:130px}.podium-card[data-place="2"]{--podium-color:#c0c0c0;order:1}.podium-card[data-place="3"]{--podium-color:#cd7f32;order:3}
-.podium-place{font-family:var(--display);font-size:43px;color:var(--text-subtle);line-height:1;position:relative;flex-shrink:0}
+.podium-card{position:relative;background:var(--panel-deep);border:1px solid var(--podium-color);padding:25px 24px;min-width:0;display:flex;align-items:center;gap:19px;min-height:111px}
+.podium-card[data-place="1"]{--podium-color:#ffd700;order:2;background:var(--accent-dim);min-height:130px}.podium-card[data-place="2"]{--podium-color:#c0c0c0;order:1}.podium-card[data-place="3"]{--podium-color:#cd7f32;order:3}
+.podium-place{font-family:var(--display);font-size:43px;color:var(--podium-color);line-height:1;position:relative;flex-shrink:0}
 /* Keep ordinal suffixes in the gap beside each rank. */
 .podium-ordinal{position:absolute;left:calc(100% + 1px);top:0;font-family:var(--font);font-size:12px;font-weight:400;line-height:1}
 @media(min-width:661px) and (max-width:1150px){.podium .podium-card{column-gap:18px}}
-.podium-card[data-place="1"] .podium-place{color:var(--accent);font-size:56px}
+.podium-card[data-place="1"] .podium-place{font-size:56px}
 .podium-info{min-width:0;margin-left:12px}.podium-name{font-size:34px;font-weight:600;overflow-wrap:anywhere;line-height:1.4}.podium-money{font-family:'Nihonium 113','Stat currency',var(--display);font-size:24px;font-weight:400;font-synthesis:none;line-height:1;margin-top:5px;white-space:nowrap}
-.podium-name:not(.unannounced),.podium-money{color:var(--podium-color)}
+.podium-name:not(.unannounced){color:#fff}
+.podium-money{color:var(--podium-color)}
+.podium-card[data-place="1"] .podium-name:not(.unannounced),.podium-card[data-place="1"] .podium-money{font-size:44px}
 /* Tuck rewards beneath the pixel glyphs without shifting the names or cards. */
 .podium-name:not(.unannounced)+.podium-money{position:relative;top:-14px}
-.podium-card .icon{margin-left:auto;color:var(--accent);width:27px;height:27px;align-self:flex-start}.podium-card[data-place="1"] .icon{color:var(--accent)}
-.podium-card[data-place="2"] .podium-place,.podium-card[data-place="2"] .icon{color:#c0c0c0}
-.podium-card[data-place="3"] .podium-place,.podium-card[data-place="3"] .icon{color:#cd7f32}
+.podium-card .icon{margin-left:auto;color:var(--podium-color);width:27px;height:27px;align-self:flex-start}
 /* Integer height/offset keep the frame crisp; offset the text independently. */
-.podium-label{position:absolute;right:16px;top:-9px;height:17px;display:flex;align-items:center;border:1px solid var(--match-winner);padding:0 8px;background:var(--accent-dim);color:var(--accent);font-size:9px;line-height:1;letter-spacing:1px;font-family:var(--mono);white-space:nowrap}
+.podium-label{position:absolute;right:16px;top:-9px;height:17px;display:flex;align-items:center;border:1px solid var(--podium-color);padding:0 8px;background:var(--accent-dim);color:var(--podium-color);font-size:9px;line-height:1;letter-spacing:1px;font-family:var(--mono);white-space:nowrap}
 /* Text alignment is tuned for 125% display scaling. */
 .podium-label>span{position:relative;top:.2px}
 .podium-name.unannounced{font-size:13px;color:var(--muted);font-weight:400}
@@ -224,4 +224,7 @@ h1>span{color:var(--accent)}
 @media(max-width:760px){.match-board,.match-board.filtered-stage{grid-template-columns:minmax(0,1fr);gap:30px}.match-board.filtered-stage .stage-matches,.stage:last-child:nth-child(odd) .stage-matches{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:480px){.players-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:370px){.container{width:calc(100% - 28px)}.hero-actions{gap:8px}.hero-actions .button{font-size:10px;padding-inline:10px}.player-button{padding:12px 8px;gap:6px}.broadcast-links .button{min-width:116px}.filter-button{padding-inline:7px}}
+/* Keep the 44px champion prize inside its card at narrow widths. */
+@media(max-width:760px){.podium{grid-template-columns:1fr}.podium-card[data-place="1"]{order:0}}
+@media(max-width:370px){.podium-card,.podium-card[data-place="1"]{padding-inline:20px;gap:16px}.podium-info{margin-left:8px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.button:hover{transform:none}}
