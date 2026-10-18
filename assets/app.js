@@ -141,7 +141,7 @@ function renderPlayers() {
   const count = state.players.length;
   $('#player-count').textContent = count;
   $('#player-count-word').textContent = plural(count, ['участник', 'участника', 'участников']);
-  $('#players-list').innerHTML = count ? state.players.map(name => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}"><span class="player-name">${esc(name)}</span></button>`).join('') : '<p class="loading-message">Список участников скоро появится.</p>';
+  $('#players-list').innerHTML = count ? state.players.map(name => `<button type="button" class="player-button" data-player="${esc(name)}" aria-label="Показать матчи игрока ${esc(name)}"><span class="player-name">${esc(name)}</span></button>`).join('') : '<p class="loading-message">Пока никто не зарегистрировался...</p>';
   $('#players-list').setAttribute('aria-busy', 'false');
 }
 
