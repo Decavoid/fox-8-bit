@@ -102,7 +102,7 @@ function renderMatches() {
     </section>`;
   }).join('');
   board.classList.toggle('filtered-stage', state.stage !== 'all');
-  board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус матча.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
+  board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое имя, этап или статус.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
   board.setAttribute('aria-busy', 'false');
   if (focusedMatch) {
     const replacement = [...board.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === focusedMatch.dataset.gamesMatch);
