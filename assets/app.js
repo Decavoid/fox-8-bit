@@ -17,7 +17,7 @@ function statusLabel(status) {
 function contestantRows(match, result) {
   return match.players.map((player, index) => {
     const score = match.scores[index];
-    const scoreLabel = score === null ? 'Счёт пока не указан' : `Очки: ${score}`;
+    const scoreLabel = score === null ? 'Счёт пока не указан' : `Выигранные раунды: ${score}`;
     return `<span class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
       <span class="contestant-name">${esc(player)}</span>
       ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
@@ -49,14 +49,14 @@ function renderGamesDialog() {
     const games = state.gamesWon?.matches.get(match.matchId)?.get(player) || [];
     return `<section class="games-dialog-games${outcome(index)}" aria-label="Выигранные игры: ${esc(player)}">${games.length
       ? `<ul>${games.map(game => `<li>${esc(game)}</li>`).join('')}</ul>`
-      : `<p class="games-dialog-empty">${match.scores[index] === 0 ? 'Нет побед в этом матче.' : 'Игры пока не указаны.'}</p>`}</section>`;
+      : `<p class="games-dialog-empty">${match.scores[index] === 0 ? 'Нет выигранных раундов.' : 'Игры пока не указаны.'}</p>`}</section>`;
   }).join('');
   return true;
 }
 
 function singleCard(match) {
   const result = matchState(match);
-  return `<button type="button" class="match-card match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. Открыть результат игры">
+  return `<button type="button" class="match-card match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. Открыть результат матча">
     ${result.status === 'completed' ? '' : `<span class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></span>`}
     ${contestantRows(match, result)}
   </button>`;
@@ -68,12 +68,12 @@ function groupCard(block) {
     <div class="group-games">
       ${block.matches.map(match => {
         const result = matchState(match);
-        return `<button type="button" class="group-game match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат игры">
+        return `<button type="button" class="group-game match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат матча">
           ${contestantRows(match, result)}
         </button>`;
       }).join('')}
     </div>
-    ${standings.replay ? '<p class="group-replay">У всех по одной победе — требуется переигровка группы.</p>' : ''}
+    ${standings.replay ? '<p class="group-replay">У всех по одной победе в матчах — требуется переигровка группы.</p>' : ''}
   </article>`;
 }
 
@@ -97,12 +97,12 @@ function renderMatches() {
     if (filtered && !blocks.length) return '';
     const count = blocks.reduce((total, block) => total + block.matches.length, 0);
     return `<section class="stage" aria-labelledby="${stage.id}-title">
-      <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['игра', 'игры', 'игр'])}</span></header>
+      <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
       <div class="stage-matches">${blocks.length ? blocks.map(block => block.type === 'group' ? groupCard(block) : singleCard(block.matches[0])).join('') : '<div class="stage-empty"><span class="empty-symbol" aria-hidden="true">[ ? ]</span>Соперники ещё не определены.<br>Здесь появятся следующие матчи.</div>'}</div>
     </section>`;
   }).join('');
   board.classList.toggle('filtered-stage', state.stage !== 'all');
-  board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Игры не найдены</h3><p>Попробуй другое имя, этап или статус.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
+  board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';
   board.setAttribute('aria-busy', 'false');
   if (focusedMatch) {
     const replacement = [...board.querySelectorAll('[data-games-match]')].find(button => button.dataset.gamesMatch === focusedMatch.dataset.gamesMatch);

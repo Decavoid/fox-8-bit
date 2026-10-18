@@ -1,4 +1,4 @@
-## Раунд 1
+## Этап 1
 MatchId | Player 1       | Score | Player 2     | Score
 
 A1 | Deeper         | 1     | neradimo     | 2
