@@ -176,7 +176,7 @@ function renderPodium() {
     return `<article class="podium-card" data-place="${place}" aria-label="${place}-е место${name ? `: ${esc(name)}` : ' ещё не определено'}">
       <span class="podium-place" aria-hidden="true">${place}<sup class="podium-ordinal">${['', 'st', 'nd', 'rd'][place]}</sup></span><div class="podium-info"><h3 class="podium-name${name ? '' : ' unannounced'}">${name ? esc(name) : 'Победитель ещё не определён'}</h3><p class="podium-money">${payout != null ? rubles(payout) : `${place}-е место`}</p></div>
       <div class="podium-award">
-        ${place === 1 ? `<span class="podium-label"><span>${name ? 'ПОБЕДИТЕЛЬ' : 'БУДУЩИЙ ПОБЕДИТЕЛЬ'}</span></span>` : ''}
+        ${place === 1 && name ? '<span class="podium-label"><span>ПОБЕДИТЕЛЬ</span></span>' : ''}
         ${icon('trophy')}
       </div>
     </article>`;
