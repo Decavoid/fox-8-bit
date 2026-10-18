@@ -166,11 +166,11 @@ h1>span{color:var(--accent)}
 .podium-card{position:relative;background:var(--panel-deep);border:1px solid var(--podium-color);padding:25px 24px;min-width:0;display:flex;align-items:center;gap:19px;min-height:111px}
 .podium-card[data-place="1"]{--podium-color:#ffd700;order:2;background:var(--accent-dim);min-height:130px}.podium-card[data-place="2"]{--podium-color:#c0c0c0;order:1}.podium-card[data-place="3"]{--podium-color:#cd7f32;order:3}
 .podium-place{font-family:var(--display);font-size:43px;color:var(--podium-color);line-height:1;position:relative;flex-shrink:0}
-/* Keep ordinal suffixes in the gap beside each rank. */
-.podium-ordinal{position:absolute;left:calc(100% + 1px);top:0;font-family:var(--font);font-size:12px;font-weight:400;line-height:1}
+/* Align the visible Golos suffix tops with the Russo numerals at every rank size. */
+.podium-ordinal{position:absolute;left:calc(100% + 1px);top:calc(12.35% - .18em);font-family:var(--font);font-size:12px;font-weight:400;line-height:1}
 @media(min-width:661px) and (max-width:1150px){.podium .podium-card{column-gap:18px}}
 .podium-card[data-place="1"] .podium-place{font-size:88px;width:auto}
-.podium-card[data-place="1"] .podium-ordinal{top:8px;font-size:16px}
+.podium-card[data-place="1"] .podium-ordinal{top:calc(12.35% - .23em);font-size:16px}
 .podium-info{min-width:0;margin-left:12px}.podium-name{font-size:34px;font-weight:600;overflow-wrap:anywhere;line-height:1.4}.podium-money{font-family:'Nihonium 113','Stat currency',var(--display);font-size:24px;font-weight:400;font-synthesis:none;line-height:1;margin-top:5px;white-space:nowrap}
 .podium-name:not(.unannounced){color:#fff}
 .podium-money{color:var(--podium-color)}
