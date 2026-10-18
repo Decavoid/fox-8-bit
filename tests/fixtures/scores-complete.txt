@@ -1,4 +1,4 @@
-## Этап 1
+[Этап 1]
 Player 1       | Score | Player 2     | Score
 
 Deeper         | 1     | neradimo     | 2
@@ -15,7 +15,7 @@ Mr(A)ked       | 0     | arcade_user  | 1
 
 
 
-## Полуфиналы
+[Полуфиналы]
 Player 1       | Score | Player 2     | Score
 
 neradimo       | 3     | odzman       | 2
@@ -26,7 +26,7 @@ dilat          | 3     | arcade_user  | 0
 
 
 
-## Финал
+[Финал]
 Player 1       | Score | Player 2       | Score
 
 neradimo       | 5     | Serxio     | 0
@@ -35,7 +35,7 @@ Serxio         | 2     | dilat      | 5
 
 
 
-## Победители
+[Победители]
 Place   | Player
 
 1       | dilat

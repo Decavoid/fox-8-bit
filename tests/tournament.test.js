@@ -29,34 +29,71 @@ test('unfinished fixture: blanks, zero scores, empty stages and unannounced winn
   assert.deepEqual(data.warnings, []);
 });
 
+test('bracketed sections flush matches and switch between phases and podium without blank lines', () => {
+  const data = parseScores('[Этап 1]\nA1 | A | 2 | B | 0\n[Финал]\nF1 | A | 2 | C | 1\n[Победители]\nPlace | Player\n1 | A\n2 | C\n[Дополнительный матч]\nX1 | B | 1 | C | 0');
+  assert.deepEqual(data.stages.map(stage => stage.title), ['Этап 1', 'Финал', 'Дополнительный матч']);
+  assert.deepEqual(data.stages.map(stage => stage.blocks.map(block => block.matches.map(match => match.matchId))), [[['A1']], [['F1']], [['X1']]]);
+  assert.deepEqual(data.winners, [{ place: 1, name: 'A' }, { place: 2, name: 'C' }]);
+  assert.deepEqual(data.warnings, []);
+});
+
+test('all hash-prefixed lines are comments and do not split match groups or change podium sections', () => {
+  const data = parseScores('# Opening comment\n## Old phase heading\n### Another comment\n[Этап 1]\nA | 2 | B | 0\n# Comment inside a group\n  ## Победители\n###Comment without a space\nB | 2 | C | 0\n#### [Финал]\nC | 1 | A | 2\n[Победители]\n1 | A\n## Этап 2\n2 | B');
+  assert.deepEqual(data.stages.map(stage => stage.title), ['Этап 1']);
+  assert.equal(data.stages[0].blocks.length, 1);
+  assert.equal(data.stages[0].blocks[0].type, 'group');
+  assert.deepEqual(data.winners, [{ place: 1, name: 'A' }, { place: 2, name: 'B' }]);
+  assert.deepEqual(data.warnings, []);
+  assert.deepEqual(parseScores('# comment\n## Этап 1\n### Победители\n######'), { stages: [], winners: [], warnings: [] });
+});
+
+test('a section header occupies its own line and contains a nonempty title without brackets', () => {
+  for (const header of ['[]', '[   ]', '[Незакрытый', 'Без открытия]', '[Финал] trailing text', '[Финал] # inline comment', '[[Вложенный]]']) {
+    const data = parseScores(`[Этап 1]\nA | 1 | B | 0\n${header}\nC | 2 | D | 0`);
+    assert.deepEqual(data.stages.map(stage => stage.title), ['Этап 1'], header);
+    assert.equal(data.stages[0].blocks.length, 2, header);
+    assert.deepEqual(data.stages[0].blocks[1].matches[0].players, ['C', 'D'], header);
+    assert.equal(data.warnings.length, 1, header);
+    assert.match(data.warnings[0], /Строка 3:/);
+  }
+});
+
+test('bracketed phase titles are literal text and keep punctuation', () => {
+  const data = parseScores('[  **Этап #1**  ]\nA | 1 | B | 0');
+  assert.equal(data.stages[0].title, '**Этап #1**');
+  assert.deepEqual(data.warnings, []);
+});
+
 test('blank lines separate individual matches even when the names form a trio', () => {
-  const data = parseScores('## Этап 1\nA | 1 | B | 0\n\nB | 1 | C | 0\n\nC | 0 | A | 1');
+  const data = parseScores('[Этап 1]\nA | 1 | B | 0\n\nB | 1 | C | 0\n\nC | 0 | A | 1');
   assert.deepEqual(data.stages[0].blocks.map(block => block.type), ['single', 'single', 'single']);
 });
 
 test('cyclic three-way tie requires a replay and never advances arbitrary players', () => {
-  const data = parseScores('## Этап 1\nA | 2 | B | 1\nB | 2 | C | 0\nC | 2 | A | 0');
+  const data = parseScores('[Этап 1]\nA | 2 | B | 1\nB | 2 | C | 0\nC | 2 | A | 0');
   const result = groupStandings(data.stages[0].blocks[0].matches);
   assert.equal(result.replay, true);
   assert.deepEqual(result.winners, []);
 });
 
 test('incomplete group and tied match cannot produce group winners', () => {
-  const data = parseScores('## Этап 1\nA | 2 | B | 0\nB | 2 | C | 2\nC | | A |');
+  const data = parseScores('[Этап 1]\nA | 2 | B | 0\nB | 2 | C | 2\nC | | A |');
   const result = groupStandings(data.stages[0].blocks[0].matches);
   assert.equal(result.complete, false);
   assert.deepEqual(result.winners, []);
 });
 
 test('BOM, CRLF, surrounding spaces and optional Markdown table pipes are supported', () => {
-  const data = parseScores('\uFEFF## Этап 1\r\n| Player 1 | Score | Player 2 | Score |\r\n| --- | --- | --- | --- |\r\n\r\n| A | 2 | B | 0 |\r\n\r\n| C | | D | |\r\n');
+  const data = parseScores('\uFEFF  [  Этап 1  ]  \r\n| Player 1 | Score | Player 2 | Score |\r\n| --- | --- | --- | --- |\r\n\r\n| A | 2 | B | 0 |\r\n\r\n| C | | D | |\r\n\t[  Победители  ] \r\n1 | A\r\n');
+  assert.equal(data.stages[0].title, 'Этап 1');
   assert.equal(data.stages[0].blocks.length, 2);
   assert.deepEqual(data.stages[0].blocks[1].matches[0].scores, [null, null]);
+  assert.deepEqual(data.winners, [{ place: 1, name: 'A' }]);
   assert.deepEqual(data.warnings, []);
 });
 
 test('explicit match IDs preserve match numbering, group detection and Markdown tables', () => {
-  const data = parseScores('\uFEFF## Этап 1\r\n| MatchId | Player 1 | Score | Player 2 | Score |\r\n| --- | --- | --- | --- | --- |\r\n\r\n| A1 | A | 2 | B | 0 |\r\n| A2 | B | 2 | C | 0 |\r\n| A3 | C | 2 | A | 1 |\r\n\r\n| B-1.2_test | A | | D | |');
+  const data = parseScores('\uFEFF[Этап 1]\r\n| MatchId | Player 1 | Score | Player 2 | Score |\r\n| --- | --- | --- | --- | --- |\r\n\r\n| A1 | A | 2 | B | 0 |\r\n| A2 | B | 2 | C | 0 |\r\n| A3 | C | 2 | A | 1 |\r\n\r\n| B-1.2_test | A | | D | |');
   const matches = data.stages[0].blocks.flatMap(block => block.matches);
   assert.deepEqual(data.stages[0].blocks.map(block => block.type), ['group', 'single']);
   assert.deepEqual(matches.map(match => [match.id, match.number, match.matchId]), [
@@ -77,7 +114,7 @@ test('legacy scores never infer source IDs from display match numbers', () => {
 });
 
 test('duplicate and invalid source IDs cannot associate game wins to the wrong match', () => {
-  const data = parseScores('## Этап 1\nA1 | A | 2 | B | 1\n\nA 2 | C | 0 | D | 2\n\n## Этап 2\nA1 | A | 1 | C | 0\n\nA1 | B | 0 | D | 1\n\nA2 | B | 1 | C | 0');
+  const data = parseScores('[Этап 1]\nA1 | A | 2 | B | 1\n\nA 2 | C | 0 | D | 2\n\n[Этап 2]\nA1 | A | 1 | C | 0\n\nA1 | B | 0 | D | 1\n\nA2 | B | 1 | C | 0');
   const matches = data.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches));
   assert.deepEqual(matches.map(match => match.matchId), [null, null, null, null, 'A2']);
   assert.deepEqual(matches.map(match => match.scores), [[2, 1], [0, 2], [1, 0], [0, 1], [1, 0]]);
@@ -125,24 +162,24 @@ test('empty game-win data and empty player sections are valid', () => {
 });
 
 test('bad scores, malformed rows and duplicate pairs are surfaced', () => {
-  const data = parseScores('## Этап 1\nA | x | B | 1\nA | 1 | B | 2\nC | 1 | B | 0\n\nbroken row');
+  const data = parseScores('[Этап 1]\nA | x | B | 1\nA | 1 | B | 2\nC | 1 | B | 0\n\nbroken row');
   assert.equal(data.stages[0].blocks.length, 3);
   assert.equal(data.stages[0].blocks[0].matches[0].scores[0], null);
   assert.ok(data.warnings.length >= 3);
 });
 
 test('filtering preserves trios and combines player and status on the same match', () => {
-  const stage = parseScores('## Этап\nA | 2 | B | 0\nB | | C |\nC | | A |\n\nD | 0 | E | 0').stages[0];
+  const stage = parseScores('[Этап]\nA | 2 | B | 0\nB | | C |\nC | | A |\n\nD | 0 | E | 0').stages[0];
   assert.equal(filterBlocks(stage, { search: ' a ', status: 'pending' })[0].matches.length, 3);
   assert.equal(filterBlocks(stage, { search: 'C', status: 'completed' }).length, 0);
   assert.equal(filterBlocks(stage, { search: 'D', status: 'pending' }).length, 1);
 });
 
 test('explicit podium is independent of score inference, empty podium rows are valid', () => {
-  const data = parseScores('## Победители\nPlace | Player\n1 |\n2 |\n3 |');
+  const data = parseScores('[Победители]\nPlace | Player\n1 |\n2 |\n3 |');
   assert.deepEqual(data.winners, []);
   assert.deepEqual(data.warnings, []);
-  const duplicate = parseScores('## Победители\n1 | A\n1 | B\n2 | A');
+  const duplicate = parseScores('[Победители]\n1 | A\n1 | B\n2 | A');
   assert.deepEqual(duplicate.winners, [{ place: 1, name: 'A' }]);
   assert.equal(duplicate.warnings.length, 2);
 });

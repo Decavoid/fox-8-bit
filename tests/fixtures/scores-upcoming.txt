@@ -1,4 +1,4 @@
-## Этап 1
+[Этап 1]
 Player 1       | Score | Player 2     | Score
 
 Deeper         | 1     | neradimo     | 2
@@ -13,13 +13,13 @@ dilat          |       | Mr(A)ked     |
 dilat          |       | arcade_user  |
 Mr(A)ked       |       | arcade_user  |
 
-## Полуфиналы
+[Полуфиналы]
 Player 1       | Score | Player 2     | Score
 
-## Финал
+[Финал]
 Player 1       | Score | Player 2       | Score
 
-## Победители
+[Победители]
 Place   | Player
 
 1       |

@@ -1,4 +1,4 @@
-# ## Этап 1
+# [Этап 1]
 # MatchId | Player 1       | Score | Player 2     | Score
 
 # A1 | Deeper         | 1     | neradimo     | 2
@@ -15,7 +15,7 @@
 
 
 
-# ## Полуфиналы
+# [Полуфиналы]
 # MatchId | Player 1       | Score | Player 2     | Score
 
 # B1 | neradimo       | 3     | odzman       | 2
@@ -26,7 +26,7 @@
 
 
 
-# ## Финал
+# [Финал]
 # MatchId | Player 1       | Score | Player 2       | Score
 
 # C1 | neradimo       | 5     | Serxio     | 0
@@ -35,7 +35,7 @@
 
 
 
-## Победители
+[Победители]
 Place   | Player
 
 # 1       | dilat

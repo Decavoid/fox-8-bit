@@ -115,11 +115,11 @@ export function parseScores(text) {
   text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach((raw, index) => {
     const line = raw.trim();
     if (!line) { flush(); return; }
-    if (/^#(?!#)/.test(line)) return;
-    const heading = line.match(/^#{2,6}\s+(.+?)\s*#*$/);
-    if (heading) {
+    if (line.startsWith('#')) return;
+    const heading = line.match(/^\[([^\[\]]+)\]$/);
+    const title = heading?.[1].trim();
+    if (title) {
       flush();
-      const title = plainMarkdown(heading[1]);
       winnersSection = /^(?:победители|пьедестал)(?:\s|$)/iu.test(title);
       if (!winnersSection) {
         stage = { id: `stage-${stages.length + 1}`, title, blocks: [] };
