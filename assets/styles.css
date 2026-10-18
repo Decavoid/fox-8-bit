@@ -244,7 +244,7 @@ h1>span{color:var(--accent)}
 .broadcast-kitsune{display:block;width:228px;height:auto;image-rendering:pixelated}
 .site-footer{border-top:1px solid var(--accent-border);font-size:20px;color:var(--muted)}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;padding-block:30px 35px;gap:25px}
-.footer-brand{gap:9px}.site-footer p a{color:var(--accent)}.back-top{white-space:nowrap}.back-top:hover{color:var(--accent)}
+.footer-brand{gap:9px;color:var(--ink)}.site-footer p a{color:var(--accent)}.back-top{white-space:nowrap}.back-top:hover{color:var(--accent)}
 .noscript-notice{padding:20px;background:#352919;color:#f3d3a4;text-align:center}.noscript-notice a{text-decoration:underline}
 
 
