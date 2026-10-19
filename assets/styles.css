@@ -180,10 +180,9 @@ h1>span{color:var(--accent)}
 .podium-card[data-place="1"]{--podium-color:#ffd700;order:2;background:var(--accent-dim);min-height:130px}.podium-card[data-place="2"]{--podium-color:#c0c0c0;order:1}.podium-card[data-place="3"]{--podium-color:#cd7f32;order:3}
 .podium-place{font-family:var(--display);font-size:43px;color:var(--podium-color);line-height:1;position:relative;flex-shrink:0}
 /* Align pixel suffixes with the visible tops of the Russo numerals. */
-.podium-ordinal{position:absolute;left:calc(100% + 1px);top:calc(12.35% - .4em);font-family:var(--pixel);font-size:20px;font-weight:400;line-height:1}
+.podium-ordinal{position:absolute;left:calc(100% + 1px);top:calc(12.35% - .25em);font-family:var(--pixel);font-size:20px;font-weight:400;line-height:1}
 @media(min-width:661px) and (max-width:1150px){.podium .podium-card{column-gap:18px}}
 .podium-card[data-place="1"] .podium-place{font-size:88px;width:auto}
-.podium-card[data-place="1"] .podium-ordinal{top:calc(12.35% - .4em);font-size:20px}
 .podium-info{min-width:0;margin-left:12px}.podium-name{font-size:34px;font-weight:600;overflow-wrap:anywhere;line-height:1.4}.podium-money{font-family:'Nihonium 113','Stat currency',var(--display);font-size:24px;font-weight:400;font-synthesis:none;line-height:1;margin-top:5px;white-space:nowrap}
 .podium-name:not(.unannounced){color:#fff}
 .podium-money{color:var(--podium-color)}
