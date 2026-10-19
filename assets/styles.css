@@ -1,12 +1,9 @@
-@font-face{font-family:Golos;src:url('fonts/golos-regular.ttf') format('truetype');font-weight:400;font-display:swap}
-@font-face{font-family:Golos;src:url('fonts/golos-semibold.ttf') format('truetype');font-weight:500 700;font-display:swap}
-@font-face{font-family:Golos;src:url('fonts/golos-extrabold.ttf') format('truetype');font-weight:800 900;font-display:swap}
 @font-face{font-family:Russo;src:url('fonts/russo-one.ttf') format('truetype');font-weight:400;font-display:swap}
 @font-face{font-family:'Nihonium 113';src:url('fonts/nihonium113.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 /* Nihonium lacks ₽; match the fallback symbol to the pixel digits' visible height. */
 @font-face{font-family:'Stat currency';src:url('fonts/golos-extrabold.ttf') format('truetype');font-weight:400;font-display:swap;unicode-range:U+20BD;size-adjust:66.6667%}
 
-:root{color-scheme:dark;--bg:#14120f;--panel:#1f1d16;--panel-light:#2b2318;--line:#443524;--ink:#f4efe5;--muted:#b4a58f;--accent:#ff8d00;--accent-dim:#322313;--accent-hover:#ffad33;--accent-border:#80552c;--accent-shadow:#80500f;--panel-deep:#191611;--text-soft:#c9b89f;--text-subtle:#a18e75;--orange:#f6ac73;--match-panel:#191611;--match-border:#4d3015;--match-winner:#ae671a;--match-accent:#ffcf8a;--font:Golos,Arial,sans-serif;--display:Russo,'Arial Black',sans-serif;--pixel:'Nihonium 113',var(--display);--mono:'Cascadia Code','SFMono-Regular',Consolas,monospace}
+:root{color-scheme:dark;--bg:#14120f;--panel:#1f1d16;--panel-light:#2b2318;--line:#443524;--ink:#f4efe5;--muted:#b4a58f;--accent:#ff8d00;--accent-dim:#322313;--accent-hover:#ffad33;--accent-border:#80552c;--accent-shadow:#80500f;--panel-deep:#191611;--text-soft:#c9b89f;--text-subtle:#a18e75;--orange:#f6ac73;--match-panel:#191611;--match-border:#4d3015;--match-winner:#ae671a;--match-accent:#ffcf8a;--display:Russo,'Arial Black',sans-serif;--pixel:'Nihonium 113',var(--display);--mono:'Cascadia Code','SFMono-Regular',Consolas,monospace}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:105px}
 /* Supporting copy and small controls stay at 20px, including on narrow screens. */
