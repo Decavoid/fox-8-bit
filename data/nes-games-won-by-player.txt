@@ -1,84 +1,84 @@
 # Header: MatchId | Player
 # Below each header: NES game names won by this player in a match MatchId from scores.txt
 
-A2 | odzman
-Batman
-Batman: Return of the Joker
-
-A3 | Lux Ferre
-
-A3 | Frank_Filter
-Battle City
-Battletoads & Double Dragon
-
-A4 | Serxio
-Battletoads
-Bucky O'Hare
-
-A4 | Billy
-Castlevania
-
-A5 | dilat
-Chip 'n Dale Rescue Rangers
-
-A6 | dilat
-Chip 'n Dale Rescue Rangers 2
-
-A7 | Mr(A)ked
-
-A7 | arcade_user
-Choujin Sentai - Jetman
-
-B1 | neradimo
-Duck Tales
-Duck Tales 2
-Excitebike
-
-B1 | odzman
-Felix the Cat
-Gimmick!
-
-B2 | Frank_Filter
-Gun-Dec
-Home Alone 2: Lost in New York
-
-B2 | Serxio
-Jackal
-Jackie Chan
-Jigoku Gokuraku Maru
-
-B3 | dilat
-Kaiketsu Yanchamaru 2: Karakuri Land
-Kyatto Ninden Teyandee
-Little Mermaid: Ningyo Hime
-
-C1 | neradimo
-Mappy
-Mario Bros.
-Mega Man
-Mickey Mousecapade
-Mighty Final Fight
-
-C2 | neradimo
-Monster In My Pocket
-Moon Crystal
-Nemo: Pajama Hero
-New Ghostbusters II
-
-C2 | dilat
-Ninja Ryukenden
-Ninja Ryukenden III
-Nuts & Milk
-Pizza Pop!
-Popeye
-
-C3 | Serxio
-Power Blade 2
-Raf World
-
-C3 | dilat
-Rush'n Attack
-Snake Rattle N Roll
-Snow Bros.
-Solomon no Kagi
-Spartan X
+# A2 | odzman
+# Batman
+# Batman: Return of the Joker
+#
+# A3 | Lux Ferre
+#
+# A3 | Frank_Filter
+# Battle City
+# Battletoads & Double Dragon
+#
+# A4 | Serxio
+# Battletoads
+# Bucky O'Hare
+#
+# A4 | Billy
+# Castlevania
+#
+# A5 | dilat
+# Chip 'n Dale Rescue Rangers
+#
+# A6 | dilat
+# Chip 'n Dale Rescue Rangers 2
+#
+# A7 | Mr(A)ked
+#
+# A7 | arcade_user
+# Choujin Sentai - Jetman
+#
+# B1 | neradimo
+# Duck Tales
+# Duck Tales 2
+# Excitebike
+#
+# B1 | odzman
+# Felix the Cat
+# Gimmick!
+#
+# B2 | Frank_Filter
+# Gun-Dec
+# Home Alone 2: Lost in New York
+#
+# B2 | Serxio
+# Jackal
+# Jackie Chan
+# Jigoku Gokuraku Maru
+#
+# B3 | dilat
+# Kaiketsu Yanchamaru 2: Karakuri Land
+# Kyatto Ninden Teyandee
+# Little Mermaid: Ningyo Hime
+#
+# C1 | neradimo
+# Mappy
+# Mario Bros.
+# Mega Man
+# Mickey Mousecapade
+# Mighty Final Fight
+#
+# C2 | neradimo
+# Monster In My Pocket
+# Moon Crystal
+# Nemo: Pajama Hero
+# New Ghostbusters II
+#
+# C2 | dilat
+# Ninja Ryukenden
+# Ninja Ryukenden III
+# Nuts & Milk
+# Pizza Pop!
+# Popeye
+#
+# C3 | Serxio
+# Power Blade 2
+# Raf World
+#
+# C3 | dilat
+# Rush'n Attack
+# Snake Rattle N Roll
+# Snow Bros.
+# Solomon no Kagi
+# Spartan X
