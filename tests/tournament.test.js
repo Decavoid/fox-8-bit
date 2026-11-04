@@ -69,18 +69,65 @@ test('blank lines separate individual matches even when the names form a trio', 
   assert.deepEqual(data.stages[0].blocks.map(block => block.type), ['single', 'single', 'single']);
 });
 
-test('cyclic three-way tie requires a replay and never advances arbitrary players', () => {
-  const data = parseScores('[Этап 1]\nA | 2 | B | 1\nB | 2 | C | 0\nC | 2 | A | 0');
+test('cyclic match wins with equal round totals require a replay', () => {
+  const data = parseScores('[Этап 1]\nA | 2 | B | 1\nB | 2 | C | 1\nC | 2 | A | 1');
   const result = groupStandings(data.stages[0].blocks[0].matches);
+  assert.equal(result.complete, true);
   assert.equal(result.replay, true);
   assert.deepEqual(result.winners, []);
 });
 
-test('incomplete group and tied match cannot produce group winners', () => {
-  const data = parseScores('[Этап 1]\nA | 2 | B | 0\nB | 2 | C | 2\nC | | A |');
+test('cyclic match wins eliminate the unique lowest round total regardless of row order', () => {
+  for (const [scores, winners, totals] of [
+    ['A | 2 | B | 1\nB | 2 | C | 1\nC | 2 | A | 0', ['B', 'C'], { A: 2, B: 3, C: 3 }],
+    ['A | 2 | B | 1\nB | 2 | C | 1\nC | 3 | A | 0', ['B', 'C'], { A: 2, B: 3, C: 4 }],
+  ]) {
+    const rows = scores.split('\n');
+    for (const order of [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]) {
+      const data = parseScores(order.map(index => rows[index]).join('\n'));
+      const result = groupStandings(data.stages[0].blocks[0].matches);
+      assert.equal(result.complete, true);
+      assert.equal(result.replay, false);
+      assert.deepEqual([...result.winners].sort(), winners);
+      assert.deepEqual(Object.fromEntries(result.standings.map(player => [player.name, player.roundWins])), totals);
+    }
+  }
+});
+
+test('match wins take priority over round totals outside a cyclic tie', () => {
+  const data = parseScores('A | 1 | B | 0\nB | 5 | C | 4\nC | 0 | A | 1');
   const result = groupStandings(data.stages[0].blocks[0].matches);
-  assert.equal(result.complete, false);
-  assert.deepEqual(result.winners, []);
+  assert.equal(result.replay, false);
+  assert.deepEqual(result.winners, ['A', 'B']);
+});
+
+test('two players tied for the lowest round total need a decision, not arbitrary advancement', () => {
+  for (const scores of [
+    'A | 2 | B | 0\nB | 2 | C | 0\nC | 2 | A | 1',
+    'C | 2 | A | 1\nB | 2 | C | 0\nA | 2 | B | 0',
+  ]) {
+    const data = parseScores(scores);
+    const result = groupStandings(data.stages[0].blocks[0].matches);
+    assert.equal(result.complete, true);
+    assert.equal(result.replay, false);
+    assert.equal(result.needsDecision, true);
+    assert.deepEqual(result.winners, []);
+  }
+});
+
+test('incomplete group and tied match cannot produce group winners', () => {
+  for (const scores of [
+    'A | 2 | B | 0\nB | 2 | C | 2\nC | | A |',
+    'A | 2 | B | 0\nB | 2 | C | 2\nC | 2 | A | 0',
+    'A | 2 | B | 0\nB | 2 | C | 0\nC | | A | 1',
+  ]) {
+    const data = parseScores(`[Этап 1]\n${scores}`);
+    const result = groupStandings(data.stages[0].blocks[0].matches);
+    assert.equal(result.complete, false);
+    assert.equal(result.replay, false);
+    assert.equal(result.needsDecision, false);
+    assert.deepEqual(result.winners, []);
+  }
 });
 
 test('BOM, CRLF, surrounding spaces and optional Markdown table pipes are supported', () => {
