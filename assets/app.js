@@ -27,6 +27,7 @@ function contestantRows(match, result) {
 const matchKey = match => match.matchId ? `source:${match.matchId}` : `row:${match.id}`;
 const findMatch = key => state.scores?.stages.flatMap(stage => stage.blocks.flatMap(block => block.matches)).find(match => matchKey(match) === key);
 const matchDescription = match => `Матч ${match.number}: ${match.players[0]} ${match.scores[0] ?? '—'} : ${match.scores[1] ?? '—'} ${match.players[1]}`;
+const isMatchActive = (match, result) => result.winner === null && match.scores.every(score => score !== null);
 
 function renderGamesDialog() {
   if (!shownGames) return false;
@@ -54,7 +55,7 @@ function renderGamesDialog() {
 
 function singleCard(match) {
   const result = matchState(match);
-  return `<button type="button" class="match-card match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. Открыть результат матча">
+  return `<button type="button" class="match-card match-trigger${isMatchActive(match, result) ? ' match-active' : ''}" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. Открыть результат матча">
     ${contestantRows(match, result)}
   </button>`;
 }
@@ -65,7 +66,7 @@ function groupCard(block) {
     <div class="group-games">
       ${block.matches.map(match => {
         const result = matchState(match);
-        return `<button type="button" class="group-game match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}${result.winner !== null ? `. Завершён. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат матча">
+        return `<button type="button" class="group-game match-trigger${isMatchActive(match, result) ? ' match-active' : ''}" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}${result.winner !== null ? `. Завершён. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат матча">
           ${contestantRows(match, result)}
         </button>`;
       }).join('')}
