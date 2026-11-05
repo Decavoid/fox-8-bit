@@ -13,7 +13,7 @@ const pad = number => String(number).padStart(2, '0');
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
 
 function statusLabel(status) {
-  return { completed: 'Завершён', pending: 'Ожидается', tied: 'Счёт равный' }[status];
+  return { completed: 'Завершён', pending: 'Не завершён', tied: 'Счёт равный' }[status];
 }
 
 function contestantRows(match, result) {

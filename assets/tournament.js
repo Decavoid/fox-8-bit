@@ -63,9 +63,13 @@ export function parseGamesWon(text) {
 
 export function matchState(match) {
   const [first, second] = match.scores;
+  const { winScore } = match;
+  if (!Number.isSafeInteger(winScore) || winScore < 1) return { status: 'pending', winner: null };
   if (first === null || second === null) return { status: 'pending', winner: null };
   if (first === second) return { status: 'tied', winner: null };
-  return { status: 'completed', winner: first > second ? 0 : 1 };
+  if (first >= winScore && second < winScore) return { status: 'completed', winner: 0 };
+  if (second >= winScore && first < winScore) return { status: 'completed', winner: 1 };
+  return { status: 'pending', winner: null };
 }
 
 export function groupStandings(matches) {
@@ -98,6 +102,17 @@ export function parseScores(text) {
   let matchNumber = 0;
   const matchIds = new Map();
 
+  function startStage(title, options, line) {
+    const setting = options.length === 1 ? options[0].match(/^win\s*=\s*(\d+)$/i) : null;
+    const target = setting ? Number(setting[1]) : null;
+    const winScore = Number.isSafeInteger(target) && target > 0 ? target : null;
+    stage = { id: `stage-${stages.length + 1}`, title, winScore, blocks: [] };
+    stages.push(stage);
+    if (winScore === null) {
+      warnings.push(`Строка ${line}: в этапе «${title}» не задан корректный порог победы. Укажите положительное целое число в заголовке, например [${title} | win=2]. Победители матчей пока не определены.`);
+    }
+  }
+
   function flush() {
     if (!block.length) return;
     const names = new Set(block.flatMap(match => match.players));
@@ -124,14 +139,11 @@ export function parseScores(text) {
     if (!line) { flush(); return; }
     if (line.startsWith('#')) return;
     const heading = line.match(/^\[([^\[\]]+)\]$/);
-    const title = heading?.[1].trim();
+    const [title, ...options] = heading ? heading[1].split('|').map(value => value.trim()) : [];
     if (title) {
       flush();
       winnersSection = /^(?:победители|пьедестал)(?:\s|$)/iu.test(title);
-      if (!winnersSection) {
-        stage = { id: `stage-${stages.length + 1}`, title, blocks: [] };
-        stages.push(stage);
-      }
+      if (!winnersSection) startStage(title, options, index + 1);
       return;
     }
     const row = line.startsWith('|') ? line.slice(1).replace(/\|$/, '') : line;
@@ -157,12 +169,12 @@ export function parseScores(text) {
       warnings.push(`Строка ${index + 1}: не удалось прочитать матч.`);
       return;
     }
-    if (!stage) {
-      stage = { id: 'stage-1', title: 'Матчи', blocks: [] };
-      stages.push(stage);
-    }
+    if (!stage) startStage('Матчи', [], index + 1);
     matchNumber++;
-    const match = { id: `match-${matchNumber}`, number: matchNumber, matchId: null, players: [values[0], values[2]], scores: [scoreValue(values[1], index + 1), scoreValue(values[3], index + 1)] };
+    const match = { id: `match-${matchNumber}`, number: matchNumber, matchId: null, winScore: stage.winScore, players: [values[0], values[2]], scores: [scoreValue(values[1], index + 1), scoreValue(values[3], index + 1)] };
+    if (match.winScore !== null && match.scores.every(score => score !== null && score >= match.winScore)) {
+      warnings.push(`Строка ${index + 1}: оба игрока достигли порога победы ${match.winScore}. Проверьте счёт матча; победитель пока не определён.`);
+    }
     if (hasMatchId) {
       const matchId = cells[0];
       if (!isMatchId(matchId)) {

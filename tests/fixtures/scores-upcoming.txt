@@ -1,4 +1,4 @@
-[Этап 1]
+[Этап 1 | win=2]
 Player 1       | Score | Player 2     | Score
 
 Deeper         | 1     | neradimo     | 2
@@ -13,10 +13,10 @@ dilat          |       | Mr(A)ked     |
 dilat          |       | arcade_user  |
 Mr(A)ked       |       | arcade_user  |
 
-[Полуфиналы]
+[Полуфиналы | win=3]
 Player 1       | Score | Player 2     | Score
 
-[Финал]
+[Финал | win=5]
 Player 1       | Score | Player 2       | Score
 
 [Победители]
