@@ -23,7 +23,7 @@ test('unfinished fixture: blanks, zero scores, empty stages and unannounced winn
   const data = parseScores(await source('fixtures/scores-upcoming.txt'));
   assert.deepEqual(data.stages.map(stage => stage.blocks.length), [5, 0, 0]);
   const matches = data.stages[0].blocks.flatMap(block => block.matches);
-  assert.deepEqual(matches.map(match => matchState(match).status), ['completed', 'completed', 'tied', 'pending', 'pending', 'pending', 'pending']);
+  assert.deepEqual(matches.map(match => matchState(match).status), ['completed', 'completed', 'pending', 'pending', 'pending', 'pending', 'pending']);
   assert.deepEqual(matches[2].scores, [0, 0]);
   assert.deepEqual(matches[3].scores, [null, null]);
   assert.equal(data.stages[0].blocks[4].type, 'group');
@@ -45,8 +45,8 @@ test('phase targets control when either player wins, including partial and missi
     [5, 5, 4, 'completed', 0],
     [1, 0, 1, 'completed', 1],
     [2, 3, 1, 'completed', 0],
-    [2, 0, 0, 'tied', null],
-    [2, 1, 1, 'tied', null],
+    [2, 0, 0, 'pending', null],
+    [2, 1, 1, 'pending', null],
     [2, null, 2, 'pending', null],
     [2, 2, null, 'pending', null],
     [2, null, null, 'pending', null],
@@ -100,8 +100,7 @@ test('both players reaching the target warns and leaves the match unfinished', (
     const data = parseScores(`[Этап | win=2]\nA1 | A | ${first} | B | ${second}`);
     const stage = data.stages[0];
     const match = stage.blocks[0].matches[0];
-    assert.equal(matchState(match).winner, null);
-    assert.notEqual(matchState(match).status, 'completed');
+    assert.deepEqual(matchState(match), { status: 'pending', winner: null });
     assert.equal(filterBlocks(stage, { status: 'completed' }).length, 0);
     assert.equal(filterBlocks(stage, { status: 'pending' }).length, 1);
     assert.equal(data.warnings.length, 1);

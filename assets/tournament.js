@@ -66,7 +66,6 @@ export function matchState(match) {
   const { winScore } = match;
   if (!Number.isSafeInteger(winScore) || winScore < 1) return { status: 'pending', winner: null };
   if (first === null || second === null) return { status: 'pending', winner: null };
-  if (first === second) return { status: 'tied', winner: null };
   if (first >= winScore && second < winScore) return { status: 'completed', winner: 0 };
   if (second >= winScore && first < winScore) return { status: 'completed', winner: 1 };
   return { status: 'pending', winner: null };
