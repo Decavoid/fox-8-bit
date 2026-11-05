@@ -12,10 +12,6 @@ const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const pad = number => String(number).padStart(2, '0');
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
 
-function statusLabel(status) {
-  return { completed: 'Завершён', pending: 'Не завершён' }[status];
-}
-
 function contestantRows(match, result) {
   return match.players.map((player, index) => {
     const score = match.scores[index];
@@ -44,7 +40,7 @@ function renderGamesDialog() {
   const order = result.winner === 1 ? [1, 0] : [0, 1];
   const outcome = index => result.winner === null ? '' : result.winner === index ? ' winner' : ' loser';
   const playerName = index => `<span class="games-dialog-player${outcome(index)}">${esc(match.players[index])}</span>`;
-  $('#games-dialog-match').textContent = `${matchDescription(match)}. ${statusLabel(result.status)}${result.winner === null ? '' : `. Победитель: ${match.players[result.winner]}`}`;
+  $('#games-dialog-match').textContent = `${matchDescription(match)}${result.winner === null ? '' : `. Завершён. Победитель: ${match.players[result.winner]}`}`;
   $('#games-dialog-scoreboard').innerHTML = `${playerName(order[0])}<div class="games-dialog-scores">${order.map(index => `<span class="games-dialog-result${outcome(index)}"><span class="score${match.scores[index] === null ? ' pending-score' : ''}" aria-label="${esc(match.players[index])}: ${match.scores[index] ?? 'счёт пока не указан'}">${match.scores[index] ?? '—'}</span></span>`).join('')}</div>${playerName(order[1])}`;
   $('#games-dialog-content').innerHTML = order.map(index => {
     const player = match.players[index];
@@ -59,7 +55,6 @@ function renderGamesDialog() {
 function singleCard(match) {
   const result = matchState(match);
   return `<button type="button" class="match-card match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. Открыть результат матча">
-    ${result.status === 'completed' ? '' : `<span class="match-card-top"><span class="match-status ${result.status}">${statusLabel(result.status)}</span></span>`}
     ${contestantRows(match, result)}
   </button>`;
 }
@@ -70,7 +65,7 @@ function groupCard(block) {
     <div class="group-games">
       ${block.matches.map(match => {
         const result = matchState(match);
-        return `<button type="button" class="group-game match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}. ${statusLabel(result.status)}${result.winner !== null ? `. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат матча">
+        return `<button type="button" class="group-game match-trigger" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}${result.winner !== null ? `. Завершён. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат матча">
           ${contestantRows(match, result)}
         </button>`;
       }).join('')}
