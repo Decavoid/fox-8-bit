@@ -9,9 +9,9 @@ A3 | КотУпульта     | 2     | KEENO        | 1
 
 A4 | Billy Mr(A)ked | 2     | Frank Filter | 1
 
-A5 | Сергей Иванов  | -     | FCst1        | -
+A6 | Death Devil    | 0     | Pavelmirmp3  | 0
 
-A6 | Death Devil    | -     | Pavelmirmp3  | -
+A5 | Сергей Иванов  | -     | FCst1        | -
 
 A7 | VatniyGaming   | -     | Zombar       | -
 
