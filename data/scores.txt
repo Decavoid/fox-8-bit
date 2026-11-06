@@ -7,9 +7,9 @@ A2 | Aktoda         | 1     | SoftandHard  | 2
 
 A3 | КотУпульта     | 2     | KEENO        | 1
 
-A4 | Сергей Иванов  | -     | FCst1        | -
+A4 | Billy Mr(A)ked | 0     | Frank Filter | 0
 
-A5 | Billy Mr(A)ked | -     | Frank Filter | -
+A5 | Сергей Иванов  | -     | FCst1        | -
 
 A6 | Death Devil    | -     | Pavelmirmp3  | -
 
