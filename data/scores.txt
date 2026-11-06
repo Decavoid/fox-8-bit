@@ -5,7 +5,7 @@ A1 | Pixel_Plex     | 0     | Hanter       | 2
 
 A2 | Aktoda         | 1     | SoftandHard  | 2
 
-A3 | КотУпульта     | 0     | KEENO        | 1
+A3 | КотУпульта     | 1     | KEENO        | 1
 
 A4 | Сергей Иванов  | -     | FCst1        | -
 
