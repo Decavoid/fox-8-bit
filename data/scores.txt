@@ -13,11 +13,11 @@ A5 | Death Devil    | 2     | Pavelmirmp3  | 0
 
 A6 | Сергей Иванов  | 0     | FCst1        | 2
 
-A7 | VatniyGaming   | -     | Zombar       | -
+A7 | JosephHTobinJr | 0     | dr_snake_on  | 0
+A8 | JosephHTobinJr | -     | ANGEL_UNDEAD | -
+A9 | ANGEL_UNDEAD   | -     | dr_snake_on  | -
 
-A8 | JosephHTobinJr | 0     | dr_snake_on  | 0
-A9 | JosephHTobinJr | -     | ANGEL_UNDEAD | -
-A10 | ANGEL_UNDEAD  | -     | dr_snake_on  | -
+A10 | VatniyGaming   | -     | Zombar       | -
 
 
 
