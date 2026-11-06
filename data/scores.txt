@@ -7,7 +7,7 @@ A2 | Aktoda         | 1     | SoftandHard  | 2
 
 A3 | КотУпульта     | 2     | KEENO        | 1
 
-A4 | Billy Mr(A)ked | 0     | Frank Filter | 1
+A4 | Billy Mr(A)ked | 1     | Frank Filter | 1
 
 A5 | Сергей Иванов  | -     | FCst1        | -
 
