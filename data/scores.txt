@@ -5,9 +5,9 @@ A1 | Pixel_Plex     | 0     | Hanter       | 2
 
 A2 | Aktoda         | 1     | SoftandHard  | 2
 
-A3 | Сергей Иванов  | -     | FCst1        | -
+A3 | КотУпульта     | 0     | KEENO        | 0
 
-A4 | КотУпульта     | -     | KEENO        | -
+A4 | Сергей Иванов  | -     | FCst1        | -
 
 A5 | Billy Mr(A)ked | -     | Frank Filter | -
 
