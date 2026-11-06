@@ -2,6 +2,6 @@
 # Below each header: NES game names won by this player in a match MatchId from scores.txt
 
 A1 | Pixel_Plex
-# Ice Climber
 
 A1 | Hanter
+Ice Climber

@@ -1,7 +1,7 @@
 [Этап 1 | win=2]
 MatchId | Player 1  | Score | Player 2     | Score
 
-A1 | Pixel_Plex     | 0     | Hanter       | 0
+A1 | Pixel_Plex     | 0     | Hanter       | 1
 
 A2 | Aktoda         | -     | SoftandHard  | -
 
