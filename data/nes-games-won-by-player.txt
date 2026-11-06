@@ -5,12 +5,14 @@ A1 | Hanter
 Ice Climber
 Bucky O'Hare
 
+
 A2 | Aktoda
 The Flintstones: The Surprise at Dinosaur Peak!
 
 A2 | SoftandHard
 Contra
 TaleSpin
+
 
 A3 | КотУпульта
 Chip 'n Dale Rescue Rangers
@@ -19,8 +21,10 @@ Power Blade 2
 A3 | KEENO
 Battletoads
 
+
 A4 | Billy Mr(A)ked
 Kyatto Ninden Teyandee
+Snake Rattle N Roll
 
 A4 | Frank Filter
 Donkey Kong Jr.
