@@ -4,3 +4,8 @@
 A1 | Hanter
 Ice Climber
 Bucky O'Hare
+
+A2 | Aktoda
+
+A2 | SoftandHard
+Contra
