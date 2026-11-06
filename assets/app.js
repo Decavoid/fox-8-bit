@@ -73,7 +73,6 @@ function groupCard(block) {
       }).join('')}
     </div>
     ${standings.replay ? '<p class="group-replay">У всех по одной победе в матчах и поровну выигранных раундов — требуется переигровка группы.</p>' : ''}
-    ${standings.needsDecision ? '<p class="group-replay">Два игрока делят последнее место по выигранным раундам — требуется решение организатора.</p>' : ''}
   </article>`;
 }
 
