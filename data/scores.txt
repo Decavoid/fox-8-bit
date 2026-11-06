@@ -15,8 +15,8 @@ A6 | Сергей Иванов  | 0     | FCst1        | 2
 
 A7 | VatniyGaming   | -     | Zombar       | -
 
-A8 | JosephHTobinJr | -     | ANGEL_UNDEAD | -
-A9 | JosephHTobinJr | -     | dr_snake_on  | -
+A8 | JosephHTobinJr | 0     | dr_snake_on  | 0
+A9 | JosephHTobinJr | -     | ANGEL_UNDEAD | -
 A10 | ANGEL_UNDEAD  | -     | dr_snake_on  | -
 
 
