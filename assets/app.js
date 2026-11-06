@@ -12,13 +12,14 @@ const rubles = value => `${new Intl.NumberFormat('ru-RU').format(value)} ₽`;
 const pad = number => String(number).padStart(2, '0');
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="#icon-${name}"/></svg>`;
 
-function contestantRows(match, result) {
+function contestantRows(match, result, pointsWinner = null) {
+  const winner = pointsWinner === null ? result.winner : match.players.indexOf(pointsWinner);
   return match.players.map((player, index) => {
     const score = match.scores[index];
     const scoreLabel = score === null ? 'Счёт пока не указан' : `Выигранные раунды: ${score}`;
-    return `<span class="contestant${result.winner === null ? '' : result.winner === index ? ' winner' : ' loser'}">
+    return `<span class="contestant${winner === null ? '' : winner === index ? ' winner' : ' loser'}">
       <span class="contestant-name">${esc(player)}</span>
-      ${result.winner === index ? '<span class="sr-only">Победитель.</span>' : ''}
+      ${winner === index ? `<span class="sr-only">${pointsWinner === null ? 'Победитель.' : 'Победитель группы по сумме очков.'}</span>` : ''}
       <span class="score${score === null ? ' pending-score' : ''}" aria-label="${scoreLabel}">${score ?? '—'}</span>
     </span>`;
   }).join('');
@@ -67,7 +68,7 @@ function groupCard(block) {
       ${block.matches.map(match => {
         const result = matchState(match);
         return `<button type="button" class="group-game match-trigger${isMatchActive(match, result) ? ' match-active' : ''}" data-games-match="${esc(matchKey(match))}" aria-haspopup="dialog" aria-controls="games-dialog" aria-label="${esc(matchDescription(match))}${result.winner !== null ? `. Завершён. Победитель: ${esc(match.players[result.winner])}` : ''}. Открыть результат матча">
-          ${contestantRows(match, result)}
+          ${contestantRows(match, result, standings.pointsWinner)}
         </button>`;
       }).join('')}
     </div>

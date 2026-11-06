@@ -84,11 +84,13 @@ export function groupStandings(matches) {
   }
   standings.sort((a, b) => b.wins - a.wins || b.roundWins - a.roundWins);
   const complete = matches.length === 3 && matches.every(match => matchState(match).status === 'completed');
+  const pointsLeaders = standings.filter(player => player.roundWins === Math.max(...standings.map(player => player.roundWins)));
+  const pointsWinner = complete && standings.length === 3 && pointsLeaders.length === 1 ? pointsLeaders[0].name : null;
   const cyclic = complete && standings.length === 3 && standings.every(player => player.wins === 1);
   const replay = cyclic && standings.every(player => player.roundWins === standings[0].roundWins);
   // The written rules do not resolve a two-player tie for the lowest round total.
   const needsDecision = cyclic && !replay && standings[1].roundWins === standings[2].roundWins;
-  return { standings, complete, replay, needsDecision, winners: complete && !replay && !needsDecision ? standings.slice(0, 2).map(player => player.name) : [] };
+  return { standings, complete, pointsWinner, replay, needsDecision, winners: complete && !replay && !needsDecision ? standings.slice(0, 2).map(player => player.name) : [] };
 }
 
 export function parseScores(text) {
