@@ -20,6 +20,10 @@ A9 | JosephHTobinJr | -     | dr_snake_on  | -
 A10 | ANGEL_UNDEAD  | -     | dr_snake_on  | -
 
 
+[Этап 2 | win=2]
+MatchId | Player 1  | Score | Player 2     | Score
+
+
 
 [Полуфиналы | win=3]
 MatchId | Player 1       | Score | Player 2     | Score
