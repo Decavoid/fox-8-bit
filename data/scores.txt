@@ -3,7 +3,7 @@ MatchId | Player 1  | Score | Player 2     | Score
 
 A1 | Pixel_Plex     | 0     | Hanter       | 2
 
-A2 | Aktoda         | -     | SoftandHard  | -
+A2 | Aktoda         | 0     | SoftandHard  | 0
 
 A3 | Сергей Иванов  | -     | FCst1        | -
 
