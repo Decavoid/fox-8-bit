@@ -1,8 +1,6 @@
 # Header: MatchId | Player
 # Below each header: NES game names won by this player in a match MatchId from scores.txt
 
-A1 | Pixel_Plex
-# Bucky O'Hare
-
 A1 | Hanter
 Ice Climber
+Bucky O'Hare
