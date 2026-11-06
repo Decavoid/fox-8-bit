@@ -57,3 +57,4 @@ A9 | dr_snake_on
 
 A9 | ANGEL_UNDEAD
 Chip 'n Dale Rescue Rangers 2
+Rush'n Attack
