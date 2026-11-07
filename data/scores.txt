@@ -45,16 +45,16 @@ C1 | VatniyGaming  | 2     | JosephHTobinJr | 3
 
 C2 | SoftandHard   | 3     | ANGEL_UNDEAD   | 1
 C3 | Death Devil   | 0     | ANGEL_UNDEAD   | 3
-C4 | Death Devil   | 1     | SoftandHard    | 0
+C4 | Death Devil   | 2     | SoftandHard    | 0
 
 
 
 [Финал | win=5]
 MatchId | Player 1       | Score | Player 2       | Score
 
-# D1 | neradimo       | 5     | Serxio     | 0
-# D2 | neradimo       | 4     | dilat      | 5
-# D3 | Serxio         | 2     | dilat      | 5
+# D1 |        | -     |       | -
+# D2 |        | -     |       | -
+# D3 |        | -     |       | -
 
 
 
