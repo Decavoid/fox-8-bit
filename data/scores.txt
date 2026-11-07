@@ -30,7 +30,7 @@ B1 | JosephHTobinJr | -     | КотУпульта  | -
 
 B2 | FCst1          | -     | Death Devil | -
 
-# B3 |     | -     |  | -
+B3 | VatniyGaming   | -     | Hanter      | -
 
 # B4 |     | -     |  | -
 # B5 |     | -     |  | -
