@@ -28,7 +28,7 @@ MatchId | Player 1  | Score | Player 2       | Score
 
 B1 | JosephHTobinJr | 2     | КотУпульта     | 0
 
-B2 | FCst1          | 0     | Death Devil    | 0
+B2 | FCst1          | 0     | Death Devil    | 1
 
 B3 | VatniyGaming   | -     | Hanter         | -
 
