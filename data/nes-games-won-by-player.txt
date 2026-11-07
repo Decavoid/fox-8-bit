@@ -91,8 +91,6 @@ Circus Charlie
 Darkwing Duck
 
 
-B6 | Billy Mr(A)ked
-
 B6 | SoftandHard
 Ninja Ryukenden III
 Ninja Crusaders
@@ -106,3 +104,8 @@ C1 | JosephHTobinJr
 Ninja Ryukenden
 Spider-Man: Return of the Sinister Six
 Duck Tales 2
+
+
+C2 | SoftandHard
+
+C2 | ANGEL_UNDEAD
