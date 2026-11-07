@@ -43,7 +43,7 @@ MatchId | Player 1 | Score | Player 2       | Score
 
 C1 | VatniyGaming  | 2     | JosephHTobinJr | 3
 
-C2 | SoftandHard   | 1     | ANGEL_UNDEAD   | 0
+C2 | SoftandHard   | 2     | ANGEL_UNDEAD   | 0
 C3 | SoftandHard   | -     | Death Devil    | -
 C4 | ANGEL_UNDEAD  | -     | Death Devil    | -
 
