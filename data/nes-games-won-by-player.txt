@@ -115,8 +115,6 @@ C2 | ANGEL_UNDEAD
 Tom & Jerry
 
 
-C3 | Death Devil
-
 C3 | ANGEL_UNDEAD
 RoboCop 3
 Monster In My Pocket
@@ -126,5 +124,6 @@ The Young Indiana Jones Chronicles
 C4 | Death Devil
 The Flintstones: The Surprise at Dinosaur Peak!
 Rush'n Attack
+Jackal
 
 C4 | SoftandHard
