@@ -39,13 +39,13 @@ B6 | Billy Mr(A)ked | 0     | SoftandHard    | 2
 
 
 [Полуфиналы | win=3]
-MatchId | Player 1       | Score | Player 2     | Score
+MatchId | Player 1 | Score | Player 2          | Score
 
-# C1 | neradimo       | 3     | odzman       | 2
+C1 | VatniyGaming  | -     | JosephHTobinJr    | -
 
-# C2 | Frank_Filter   | 2     | Serxio       | 3
-
-# C3 | dilat          | 3     | arcade_user  | 0
+C2 | SoftandHard   | -     | ANGEL_UNDEAD      | -
+C3 | SoftandHard   | -     | Death Devil       | -
+C4 | ANGEL_UNDEAD  | -     | Death Devil       | -
 
 
 
