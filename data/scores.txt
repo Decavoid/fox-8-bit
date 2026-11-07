@@ -24,17 +24,17 @@ A11 | VatniyGaming    | 2     | Zombar | 0
 
 
 [Этап 2 | win=2]
-MatchId | Player 1  | Score | Player 2     | Score
+MatchId | Player 1  | Score | Player 2       | Score
 
-B1 | JosephHTobinJr | -     | КотУпульта  | -
+B1 | JosephHTobinJr | -     | КотУпульта     | -
 
-B2 | FCst1          | -     | Death Devil | -
+B2 | FCst1          | -     | Death Devil    | -
 
-B3 | VatniyGaming   | -     | Hanter      | -
+B3 | VatniyGaming   | -     | Hanter         | -
 
-# B4 |     | -     |  | -
-# B5 |     | -     |  | -
-# B6 |     | -     |  | -
+B4 | SoftandHard    | -     | ANGEL_UNDEAD   | -
+B5 | SoftandHard    | -     | Billy Mr(A)ked | -
+B6 | ANGEL_UNDEAD   | -     | Billy Mr(A)ked | -
 
 
 
