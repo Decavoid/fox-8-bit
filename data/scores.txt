@@ -39,13 +39,13 @@ B6 | Billy Mr(A)ked | 0     | SoftandHard    | 2
 
 
 [Полуфиналы | win=3]
-MatchId | Player 1 | Score | Player 2          | Score
+MatchId | Player 1 | Score | Player 2       | Score
 
-C1 | VatniyGaming  | -     | JosephHTobinJr    | -
+C1 | VatniyGaming  | 0     | JosephHTobinJr | 0
 
-C2 | SoftandHard   | -     | ANGEL_UNDEAD      | -
-C3 | SoftandHard   | -     | Death Devil       | -
-C4 | ANGEL_UNDEAD  | -     | Death Devil       | -
+C2 | SoftandHard   | -     | ANGEL_UNDEAD   | -
+C3 | SoftandHard   | -     | Death Devil    | -
+C4 | ANGEL_UNDEAD  | -     | Death Devil    | -
 
 
 
