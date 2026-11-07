@@ -45,7 +45,7 @@ C1 | VatniyGaming  | 2     | JosephHTobinJr | 3
 
 C2 | SoftandHard   | 3     | ANGEL_UNDEAD   | 1
 C3 | Death Devil   | 0     | ANGEL_UNDEAD   | 3
-C4 | SoftandHard   | -     | Death Devil    | -
+C4 | Death Devil   | 0     | SoftandHard    | 0
 
 
 
