@@ -23,7 +23,7 @@ A11 | VatniyGaming    | 2     | Zombar | 0
 
 
 
-[Этап 2 | win=2]
+[Этап 2 | win=2 | column=middle]
 MatchId | Player 1  | Score | Player 2       | Score
 
 B1 | JosephHTobinJr | 2     | КотУпульта     | 0
@@ -38,7 +38,7 @@ B6 | Billy Mr(A)ked | 0     | SoftandHard    | 2
 
 
 
-[Полуфиналы | win=3]
+[Полуфиналы | win=3 | column=middle]
 MatchId | Player 1 | Score | Player 2       | Score
 
 C1 | VatniyGaming  | 2     | JosephHTobinJr | 3

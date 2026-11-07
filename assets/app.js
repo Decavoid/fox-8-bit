@@ -1,4 +1,4 @@
-import { escapeHtml as esc, plural, parsePlayers, parseGames, parseGamesWon, parseScores, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown } from './tournament.js';
+import { escapeHtml as esc, plural, parsePlayers, parseGames, parseGamesWon, parseScores, parseRules, matchState, groupStandings, groupStageColumns, filterBlocks, renderMarkdown } from './tournament.js';
 import { enhanceStatusSelect } from './status-select.js';
 
 const $ = selector => document.querySelector(selector);
@@ -90,17 +90,21 @@ function renderMatches() {
   const board = $('#match-board');
   const focusedMatch = document.activeElement?.closest('[data-games-match]');
   const stages = state.scores.stages.filter(stage => state.stage === 'all' || stage.id === state.stage);
+  const columns = state.stage === 'all' ? groupStageColumns(stages) : [stages];
   let anyMatches = false;
   const filtered = Boolean(state.search.trim()) || state.status !== 'all';
-  const html = stages.map(stage => {
-    const blocks = filterBlocks(stage, state);
-    if (blocks.length) anyMatches = true;
-    if (filtered && !blocks.length) return '';
-    const count = blocks.reduce((total, block) => total + block.matches.length, 0);
-    return `<section class="stage" aria-labelledby="${stage.id}-title">
-      <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
-      <div class="stage-matches">${blocks.length ? blocks.map(block => block.type === 'group' ? groupCard(block) : singleCard(block.matches[0])).join('') : '<div class="stage-empty"><span class="empty-symbol" aria-hidden="true">[ ? ]</span>Соперники ещё не определены.<br>Здесь появятся следующие матчи.</div>'}</div>
-    </section>`;
+  const html = columns.map(column => {
+    const content = column.map(stage => {
+      const blocks = filterBlocks(stage, state);
+      if (blocks.length) anyMatches = true;
+      if (filtered && !blocks.length) return '';
+      const count = blocks.reduce((total, block) => total + block.matches.length, 0);
+      return `<section class="stage" aria-labelledby="${stage.id}-title">
+        <header class="stage-header"><h3 id="${stage.id}-title">${esc(stage.title)}</h3><span class="stage-count">${count} ${plural(count, ['матч', 'матча', 'матчей'])}</span></header>
+        <div class="stage-matches">${blocks.length ? blocks.map(block => block.type === 'group' ? groupCard(block) : singleCard(block.matches[0])).join('') : '<div class="stage-empty"><span class="empty-symbol" aria-hidden="true">[ ? ]</span>Соперники ещё не определены.<br>Здесь появятся следующие матчи.</div>'}</div>
+      </section>`;
+    }).join('');
+    return content && state.stage === 'all' ? `<div class="stage-column">${content}</div>` : content;
   }).join('');
   board.classList.toggle('filtered-stage', state.stage !== 'all');
   board.innerHTML = filtered && !anyMatches ? '<div class="empty-state"><h3>Матчи не найдены</h3><p>Попробуй другое имя, этап или статус.</p><button type="button" class="reset-button" data-reset>Сбросить фильтры</button></div>' : html || '<div class="empty-state"><h3>Жеребьёвка впереди</h3><p>Как только пары будут определены, здесь появятся первые матчи.</p></div>';

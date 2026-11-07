@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { parseScores, parsePlayers, parseGamesWon, parseRules, matchState, groupStandings, filterBlocks, renderMarkdown, inlineMarkdown, plural } from '../assets/tournament.js';
+import { parseScores, parsePlayers, parseGamesWon, parseRules, matchState, groupStandings, groupStageColumns, filterBlocks, renderMarkdown, inlineMarkdown, plural } from '../assets/tournament.js';
 
 const source = file => readFile(new URL(file, import.meta.url), 'utf8');
 
@@ -72,7 +72,7 @@ test('missing or invalid targets warn, suppress winners and never inherit anothe
     '[Unknown]', '[Unknown | win=]', '[Unknown | win=0]', '[Unknown | win=-1]',
     '[Unknown | win=2.5]', '[Unknown | win=two]', '[Unknown | win=1e3]',
     '[Unknown | win=Infinity]', '[Unknown | win=9007199254740992]',
-    '[Unknown | wins=2]', '[Unknown | win=2 | win=3]', '[Unknown | win=2 | extra]',
+    '[Unknown | win=2 | win=3]',
   ]) {
     const data = parseScores(`[First | win=2]\nA | 2 | B | 0\n${header}\nC | 3 | D | 0\n[Last | win=1]\nE | 0 | F | 1`);
     assert.deepEqual(data.stages.map(stage => stage.winScore), [2, null, 1], header);
@@ -84,6 +84,55 @@ test('missing or invalid targets warn, suppress winners and never inherit anothe
     assert.equal(data.warnings.length, 1, header);
     assert.match(data.warnings[0], /Строка 3:.*порог победы/, header);
   }
+});
+
+test('column settings accept either option order and never inherit from the previous stage', () => {
+  const data = parseScores('[Opening | win=2]\n[Round 2 | win=2 | column=middle]\nA1 | A | 2 | B | 1\n[Semifinal | COLUMN = middle | WIN = 3]\nB1 | A | 2 | C | 1\n[Final | win=5]');
+  assert.deepEqual(data.stages.map(stage => [stage.title, stage.winScore, stage.column]), [
+    ['Opening', 2, null], ['Round 2', 2, 'middle'], ['Semifinal', 3, 'middle'], ['Final', 5, null],
+  ]);
+  assert.deepEqual(data.stages.slice(1, 3).map(stage => matchState(stage.blocks[0].matches[0]).status), ['completed', 'pending']);
+  assert.deepEqual(data.warnings, []);
+});
+
+test('invalid and duplicate column settings warn without changing match results', () => {
+  for (const option of ['column=', 'column=two words', 'column=<middle>', 'column=../middle', 'column=middle | column=middle', 'column=middle | COLUMN=other']) {
+    const data = parseScores(`[Round | win=2 | ${option}]\nA1 | A | 2 | B | 1`);
+    assert.equal(data.stages[0].column, null, option);
+    assert.equal(data.stages[0].winScore, 2, option);
+    assert.deepEqual(matchState(data.stages[0].blocks[0].matches[0]), { status: 'completed', winner: 0 }, option);
+    assert.equal(data.warnings.length, 1, option);
+    assert.match(data.warnings[0], /Строка 1:.*column/, option);
+  }
+  const missingWin = parseScores('[Round | column=middle]\nA1 | A | 2 | B | 1');
+  assert.equal(missingWin.stages[0].column, 'middle');
+  assert.equal(missingWin.stages[0].winScore, null);
+  assert.equal(missingWin.warnings.length, 1);
+  assert.match(missingWin.warnings[0], /порог победы/);
+});
+
+test('unknown or malformed options warn independently of recognized settings', () => {
+  for (const option of ['extra', 'columns=middle', 'column', 'win', 'wins=3']) {
+    const data = parseScores(`[Round | ${option} | win=2 | column=middle]\nA1 | A | 2 | B | 1`);
+    assert.equal(data.stages[0].column, 'middle', option);
+    assert.deepEqual(matchState(data.stages[0].blocks[0].matches[0]), { status: 'completed', winner: 0 }, option);
+    assert.equal(data.warnings.length, 1, option);
+    assert.match(data.warnings[0], /неизвестный или некорректный параметр/, option);
+  }
+  const misspelledWin = parseScores('[Round | wins=2]\nA1 | A | 2 | B | 1');
+  assert.equal(misspelledWin.stages[0].winScore, null);
+  assert.equal(misspelledWin.warnings.length, 2);
+  assert.ok(misspelledWin.warnings.some(warning => /порог победы/.test(warning)));
+});
+
+test('columns group nonadjacent stages in first-appearance order while unassigned stages stay separate', () => {
+  const data = parseScores('[Opening | win=2]\n[Round 2 | win=2 | column=middle]\n[Final | win=5]\n[Semifinal | win=3 | column=middle]\n[Extra | win=2 | column=stage-1]\n[Case sensitive | win=2 | column=Middle]\n[Numeric | win=2 | column=1]\n[Punctuation | win=2 | column=pool-1_a.b]');
+  assert.deepEqual(groupStageColumns(data.stages).map(column => column.map(stage => stage.title)), [
+    ['Opening'], ['Round 2', 'Semifinal'], ['Final'], ['Extra'], ['Case sensitive'], ['Numeric'], ['Punctuation'],
+  ]);
+  assert.deepEqual(data.warnings, []);
+  assert.deepEqual(groupStageColumns([]), []);
+  assert.deepEqual(groupStageColumns(data.stages.slice(0, 1)), [[data.stages[0]]]);
 });
 
 test('matches without a phase header remain readable but cannot declare winners', () => {

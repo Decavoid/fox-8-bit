@@ -106,13 +106,22 @@ export function parseScores(text) {
   const matchIds = new Map();
 
   function startStage(title, options, line) {
-    const setting = options.length === 1 ? options[0].match(/^win\s*=\s*(\d+)$/i) : null;
-    const target = setting ? Number(setting[1]) : null;
+    const settings = { win: [], column: [] };
+    for (const option of options) {
+      const setting = option.match(/^(win|column)\s*=\s*(.*)$/i);
+      if (setting) settings[setting[1].toLowerCase()].push(setting[2].trim());
+      else warnings.push(`Строка ${line}: в этапе «${title}» неизвестный или некорректный параметр «${option}». Используйте win=2 или column=middle.`);
+    }
+    const target = settings.win.length === 1 && /^\d+$/.test(settings.win[0]) ? Number(settings.win[0]) : null;
     const winScore = Number.isSafeInteger(target) && target > 0 ? target : null;
-    stage = { id: `stage-${stages.length + 1}`, title, winScore, blocks: [] };
+    const column = settings.column.length === 1 && /^[a-z\d][a-z\d._-]*$/i.test(settings.column[0]) ? settings.column[0] : null;
+    stage = { id: `stage-${stages.length + 1}`, title, winScore, column, blocks: [] };
     stages.push(stage);
     if (winScore === null) {
       warnings.push(`Строка ${line}: в этапе «${title}» не задан корректный порог победы. Укажите положительное целое число в заголовке, например [${title} | win=2]. Победители матчей пока не определены.`);
+    }
+    if (settings.column.length && column === null) {
+      warnings.push(`Строка ${line}: в этапе «${title}» некорректный или повторный параметр column. Укажите один ключ из латинских букв, цифр, точек, дефисов и подчёркиваний, начиная с буквы или цифры, например column=middle. Этап показан в отдельной колонке.`);
     }
   }
 
@@ -195,6 +204,17 @@ export function parseScores(text) {
   });
   flush();
   return { stages, winners: winners.sort((a, b) => a.place - b.place), warnings };
+}
+
+/** Column order follows first occurrence; unassigned stages each own a column. */
+export function groupStageColumns(stages) {
+  const columns = new Map();
+  for (const stage of stages) {
+    const key = stage.column ?? stage;
+    if (!columns.has(key)) columns.set(key, []);
+    columns.get(key).push(stage);
+  }
+  return [...columns.values()];
 }
 
 export function filterBlocks(stage, { search = '', status = 'all' } = {}) {
