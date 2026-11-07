@@ -22,28 +22,39 @@ A10 | dr_snake_on    | 0     | ANGEL_UNDEAD | 2
 A11 | VatniyGaming    | 2     | Zombar | 0
 
 
+
 [Этап 2 | win=2]
 MatchId | Player 1  | Score | Player 2     | Score
+
+B1 | JosephHTobinJr    | -     | КотУпульта | -
+
+# B2 |     | -     |  | -
+
+# B3 |     | -     |  | -
+
+# B4 |     | -     |  | -
+# B5 |     | -     |  | -
+# B6 |     | -     |  | -
 
 
 
 [Полуфиналы | win=3]
 MatchId | Player 1       | Score | Player 2     | Score
 
-# B1 | neradimo       | 3     | odzman       | 2
+# C1 | neradimo       | 3     | odzman       | 2
 
-# B2 | Frank_Filter   | 2     | Serxio       | 3
+# C2 | Frank_Filter   | 2     | Serxio       | 3
 
-# B3 | dilat          | 3     | arcade_user  | 0
+# C3 | dilat          | 3     | arcade_user  | 0
 
 
 
 [Финал | win=5]
 MatchId | Player 1       | Score | Player 2       | Score
 
-# C1 | neradimo       | 5     | Serxio     | 0
-# C2 | neradimo       | 4     | dilat      | 5
-# C3 | Serxio         | 2     | dilat      | 5
+# D1 | neradimo       | 5     | Serxio     | 0
+# D2 | neradimo       | 4     | dilat      | 5
+# D3 | Serxio         | 2     | dilat      | 5
 
 
 
