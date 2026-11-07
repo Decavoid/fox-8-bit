@@ -113,3 +113,8 @@ TaleSpin
 
 C2 | ANGEL_UNDEAD
 Tom & Jerry
+
+
+C3 | Death Devil
+
+C3 | ANGEL_UNDEAD
