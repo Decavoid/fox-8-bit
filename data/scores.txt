@@ -34,7 +34,7 @@ B3 | VatniyGaming   | 2     | Hanter         | 1
 
 B4 | SoftandHard    | 2     | ANGEL_UNDEAD   | 0
 B5 | Billy Mr(A)ked | 0     | ANGEL_UNDEAD   | 2
-B6 | SoftandHard    | 0     | Billy Mr(A)ked | 0
+B6 | Billy Mr(A)ked | 0     | SoftandHard    | 0
 
 
 
