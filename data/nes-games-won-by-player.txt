@@ -72,3 +72,4 @@ B2 | FCst1
 
 B2 | Death Devil
 Tetris
+Mega Man
