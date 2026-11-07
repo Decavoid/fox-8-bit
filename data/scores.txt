@@ -53,9 +53,9 @@ C5 | Death Devil   | -     | SoftandHard    | -
 [Финал | win=5]
 MatchId | Player 1       | Score | Player 2       | Score
 
-# D1 |        | -     |       | -
-# D2 |        | -     |       | -
-# D3 |        | -     |       | -
+D1 | JosephHTobinJr       | -     | ANGEL_UNDEAD      | -
+D2 | JosephHTobinJr       | -     | ?      | -
+D3 | ANGEL_UNDEAD         | -     | ?      | -
 
 
 
