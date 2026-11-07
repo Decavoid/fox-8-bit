@@ -30,7 +30,7 @@ B1 | JosephHTobinJr | 2     | КотУпульта     | 0
 
 B2 | FCst1          | 0     | Death Devil    | 2
 
-B3 | VatniyGaming   | -     | Hanter         | -
+B3 | VatniyGaming   | 0     | Hanter         | 0
 
 B4 | SoftandHard    | -     | ANGEL_UNDEAD   | -
 B5 | SoftandHard    | -     | Billy Mr(A)ked | -
