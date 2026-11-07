@@ -58,8 +58,6 @@ Chip 'n Dale Rescue Rangers 2
 Rush'n Attack
 
 
-A10 | dr_snake_on
-
 A10 | ANGEL_UNDEAD
 Kage
 Monster In My Pocket
@@ -67,5 +65,6 @@ Monster In My Pocket
 
 B1 | JosephHTobinJr
 Daiku no Gen San
+Mario Bros.
 
 B1 | КотУпульта
