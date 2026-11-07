@@ -33,7 +33,7 @@ B2 | FCst1          | 0     | Death Devil    | 2
 B3 | VatniyGaming   | 2     | Hanter         | 1
 
 B4 | SoftandHard    | 2     | ANGEL_UNDEAD   | 0
-B5 | Billy Mr(A)ked | 0     | ANGEL_UNDEAD   | 0
+B5 | Billy Mr(A)ked | 0     | ANGEL_UNDEAD   | 1
 B6 | SoftandHard    | -     | Billy Mr(A)ked | -
 
 
