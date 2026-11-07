@@ -26,9 +26,9 @@ A11 | VatniyGaming    | 2     | Zombar | 0
 [Этап 2 | win=2]
 MatchId | Player 1  | Score | Player 2     | Score
 
-B1 | JosephHTobinJr    | -     | КотУпульта | -
+B1 | JosephHTobinJr | -     | КотУпульта  | -
 
-# B2 |     | -     |  | -
+B2 | FCst1          | -     | Death Devil | -
 
 # B3 |     | -     |  | -
 
