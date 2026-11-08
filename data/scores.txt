@@ -47,7 +47,7 @@ C2 | SoftandHard   | 3     | ANGEL_UNDEAD   | 1
 C3 | Death Devil   | 0     | ANGEL_UNDEAD   | 3
 C4 | Death Devil   | 3     | SoftandHard    | 0
 
-C5 | Death Devil   | -     | SoftandHard    | -
+C5 | Death Devil   | 0     | SoftandHard    | 0
 
 
 [Финал | win=5]
