@@ -62,6 +62,6 @@ D3 | ANGEL_UNDEAD   | 0     | SoftandHard   | 0
 [Победители]
 Place   | Player
 
-# 1       | dilat
-# 2       | neradimo
-# 3       | Serxio
+# 1       |
+# 2       |
+3       | JosephHTobinJr
