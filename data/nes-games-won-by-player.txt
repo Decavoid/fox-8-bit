@@ -139,6 +139,7 @@ Adventures in Magic Kingdom
 
 D1 | JosephHTobinJr
 
-D2 | ANGEL_UNDEAD
+D1 | ANGEL_UNDEAD
 Donkey Kong
 Track & Field
+# Wacky Races
