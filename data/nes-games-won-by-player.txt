@@ -158,3 +158,8 @@ Power Blade 2
 Ice Climber
 Gun-Dec
 Dragon Fighter
+
+
+D3 | ANGEL_UNDEAD
+
+D3 | SoftandHard

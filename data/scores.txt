@@ -55,7 +55,7 @@ MatchId | Player 1  | Score | Player 2      | Score
 
 D1 | JosephHTobinJr | 0     | ANGEL_UNDEAD  | 5
 D2 | JosephHTobinJr | 3     | SoftandHard   | 5
-D3 | ANGEL_UNDEAD   | -     | SoftandHard   | -
+D3 | ANGEL_UNDEAD   | 0     | SoftandHard   | 0
 
 
 
